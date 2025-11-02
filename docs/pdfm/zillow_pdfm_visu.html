@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
@@ -58,7 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -102,10 +102,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 
 
 </head>
@@ -128,12 +124,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html">
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
-  </li>
+  </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../slides/slides.html">
+    <a class="nav-link" href="../slides/slides.html"> 
 <span class="menu-text">Presentation</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-demos" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Demos</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-demos">    
+        <li>
+    <a class="dropdown-item" href="../satellite-embedding/demo2/landcover-classification.html">
+ <span class="dropdown-text">Demo 2: Land Cover Classification with K-Means Clustering (reformatted)</span></a>
+  </li>  
+    </ul>
   </li>
 </ul>
           </div> <!-- /navcollapse -->
@@ -147,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
@@ -155,7 +162,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div id="a25a5eaa" class="cell" data-execution_count="1">
+<div id="0" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
@@ -168,7 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> leafmap.maplibregl <span class="im">as</span> leafmap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="150c3328" class="cell" data-execution_count="2">
+<div id="1" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>zhvi <span class="op">=</span> <span class="st">"https://github.com/opengeos/datasets/releases/download/us/zillow_home_value_index_by_county.csv"</span></span>
@@ -177,772 +184,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    download_file(zhvi, zhvo_file)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="ab43b872" class="cell" data-execution_count="3">
+<div id="2" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>zhvi_df <span class="op">=</span> pd.read_csv(zhvo_file, dtype<span class="op">=</span>{<span class="st">"StateCodeFIPS"</span>: <span class="bu">str</span>, <span class="st">"MunicipalCodeFIPS"</span>: <span class="bu">str</span>})</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>zhvi_df.index <span class="op">=</span> <span class="st">"geoId/"</span> <span class="op">+</span> zhvi_df[<span class="st">"StateCodeFIPS"</span>] <span class="op">+</span> zhvi_df[<span class="st">"MunicipalCodeFIPS"</span>]</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>zhvi_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionID</th>
-<th data-quarto-table-cell-role="th">SizeRank</th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">RegionType</th>
-<th data-quarto-table-cell-role="th">StateName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">Metro</th>
-<th data-quarto-table-cell-role="th">StateCodeFIPS</th>
-<th data-quarto-table-cell-role="th">MunicipalCodeFIPS</th>
-<th data-quarto-table-cell-role="th">2000-01-31</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">2024-04-30</th>
-<th data-quarto-table-cell-role="th">2024-05-31</th>
-<th data-quarto-table-cell-role="th">2024-06-30</th>
-<th data-quarto-table-cell-role="th">2024-07-31</th>
-<th data-quarto-table-cell-role="th">2024-08-31</th>
-<th data-quarto-table-cell-role="th">2024-09-30</th>
-<th data-quarto-table-cell-role="th">2024-10-31</th>
-<th data-quarto-table-cell-role="th">2024-11-30</th>
-<th data-quarto-table-cell-role="th">2024-12-31</th>
-<th data-quarto-table-cell-role="th">2025-01-31</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06037</td>
-<td>3101</td>
-<td>0</td>
-<td>Los Angeles County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>Los Angeles-Long Beach-Anaheim, CA</td>
-<td>06</td>
-<td>037</td>
-<td>206685.940073</td>
-<td>...</td>
-<td>848100.109098</td>
-<td>851249.814267</td>
-<td>853328.259951</td>
-<td>856958.247702</td>
-<td>862129.887015</td>
-<td>868712.125738</td>
-<td>873819.306305</td>
-<td>877921.805494</td>
-<td>881313.863788</td>
-<td>880547.372613</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/17031</td>
-<td>139</td>
-<td>1</td>
-<td>Cook County</td>
-<td>county</td>
-<td>IL</td>
-<td>IL</td>
-<td>Chicago-Naperville-Elgin, IL-IN-WI</td>
-<td>17</td>
-<td>031</td>
-<td>145737.060609</td>
-<td>...</td>
-<td>297797.137247</td>
-<td>299609.927472</td>
-<td>300652.787054</td>
-<td>301303.254592</td>
-<td>302118.600852</td>
-<td>302781.699599</td>
-<td>303133.869223</td>
-<td>303523.016515</td>
-<td>304181.858348</td>
-<td>305000.265124</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/48201</td>
-<td>1090</td>
-<td>2</td>
-<td>Harris County</td>
-<td>county</td>
-<td>TX</td>
-<td>TX</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>48</td>
-<td>201</td>
-<td>109327.540062</td>
-<td>...</td>
-<td>282689.212331</td>
-<td>283279.667076</td>
-<td>283161.721769</td>
-<td>282792.559444</td>
-<td>282454.169156</td>
-<td>282239.614216</td>
-<td>281873.680565</td>
-<td>281423.466788</td>
-<td>281191.554410</td>
-<td>281000.895149</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/04013</td>
-<td>2402</td>
-<td>3</td>
-<td>Maricopa County</td>
-<td>county</td>
-<td>AZ</td>
-<td>AZ</td>
-<td>Phoenix-Mesa-Chandler, AZ</td>
-<td>04</td>
-<td>013</td>
-<td>142829.577207</td>
-<td>...</td>
-<td>467600.239765</td>
-<td>468996.512594</td>
-<td>469164.401050</td>
-<td>468562.421846</td>
-<td>467451.263586</td>
-<td>466509.197532</td>
-<td>465782.610071</td>
-<td>465120.188374</td>
-<td>464544.544452</td>
-<td>463613.340231</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06073</td>
-<td>2841</td>
-<td>4</td>
-<td>San Diego County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>San Diego-Chula Vista-Carlsbad, CA</td>
-<td>06</td>
-<td>073</td>
-<td>212384.876155</td>
-<td>...</td>
-<td>918694.464981</td>
-<td>927384.144048</td>
-<td>931835.812500</td>
-<td>933267.733074</td>
-<td>932833.552309</td>
-<td>932389.735948</td>
-<td>931683.464702</td>
-<td>931874.623336</td>
-<td>932380.083872</td>
-<td>932486.305190</td>
-</tr>
-</tbody>
-</table>
-
-<p>5 rows × 310 columns</p>
 </div>
-</div>
-</div>
-<div id="d8ab07b2" class="cell" data-execution_count="4">
+<div id="3" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>county_geojson <span class="op">=</span> <span class="st">"/home/zyang91/Desktop/us/county.geojson"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="7e1b1d80" class="cell" data-execution_count="5">
+<div id="4" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>county_gdf <span class="op">=</span> gpd.read_file(county_geojson)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>county_gdf.set_index(<span class="st">"place"</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>county_gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">index</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">place</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/29510</td>
-<td>0</td>
-<td>POLYGON ((-90.31662 38.60398, -90.32008 38.593...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/32510</td>
-<td>1</td>
-<td>POLYGON ((-120.00431 39.16561, -120.00297 39.1...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/51580</td>
-<td>2</td>
-<td>POLYGON ((-80.00796 37.76462, -80.0085 37.7611...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/51530</td>
-<td>3</td>
-<td>POLYGON ((-79.38112 37.74236, -79.38063 37.740...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/51678</td>
-<td>4</td>
-<td>POLYGON ((-79.45401 37.79249, -79.46155 37.785...</td>
-</tr>
-</tbody>
-</table>
-
 </div>
-</div>
-</div>
-<div id="d1fb30f5" class="cell" data-execution_count="6">
+<div id="5" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> zhvi_df.join(county_gdf)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="6">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionID</th>
-<th data-quarto-table-cell-role="th">SizeRank</th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">RegionType</th>
-<th data-quarto-table-cell-role="th">StateName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">Metro</th>
-<th data-quarto-table-cell-role="th">StateCodeFIPS</th>
-<th data-quarto-table-cell-role="th">MunicipalCodeFIPS</th>
-<th data-quarto-table-cell-role="th">2000-01-31</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">2024-06-30</th>
-<th data-quarto-table-cell-role="th">2024-07-31</th>
-<th data-quarto-table-cell-role="th">2024-08-31</th>
-<th data-quarto-table-cell-role="th">2024-09-30</th>
-<th data-quarto-table-cell-role="th">2024-10-31</th>
-<th data-quarto-table-cell-role="th">2024-11-30</th>
-<th data-quarto-table-cell-role="th">2024-12-31</th>
-<th data-quarto-table-cell-role="th">2025-01-31</th>
-<th data-quarto-table-cell-role="th">index</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06037</td>
-<td>3101</td>
-<td>0</td>
-<td>Los Angeles County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>Los Angeles-Long Beach-Anaheim, CA</td>
-<td>06</td>
-<td>037</td>
-<td>206685.940073</td>
-<td>...</td>
-<td>853328.259951</td>
-<td>856958.247702</td>
-<td>862129.887015</td>
-<td>868712.125738</td>
-<td>873819.306305</td>
-<td>877921.805494</td>
-<td>881313.863788</td>
-<td>880547.372613</td>
-<td>218.0</td>
-<td>MULTIPOLYGON (((-118.67855 33.02634, -118.6748...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/17031</td>
-<td>139</td>
-<td>1</td>
-<td>Cook County</td>
-<td>county</td>
-<td>IL</td>
-<td>IL</td>
-<td>Chicago-Naperville-Elgin, IL-IN-WI</td>
-<td>17</td>
-<td>031</td>
-<td>145737.060609</td>
-<td>...</td>
-<td>300652.787054</td>
-<td>301303.254592</td>
-<td>302118.600852</td>
-<td>302781.699599</td>
-<td>303133.869223</td>
-<td>303523.016515</td>
-<td>304181.858348</td>
-<td>305000.265124</td>
-<td>635.0</td>
-<td>POLYGON ((-88.26308 42.06686, -88.26272 41.986...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/48201</td>
-<td>1090</td>
-<td>2</td>
-<td>Harris County</td>
-<td>county</td>
-<td>TX</td>
-<td>TX</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>48</td>
-<td>201</td>
-<td>109327.540062</td>
-<td>...</td>
-<td>283161.721769</td>
-<td>282792.559444</td>
-<td>282454.169156</td>
-<td>282239.614216</td>
-<td>281873.680565</td>
-<td>281423.466788</td>
-<td>281191.554410</td>
-<td>281000.895149</td>
-<td>2362.0</td>
-<td>POLYGON ((-95.96052 30.16368, -95.92658 30.068...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/04013</td>
-<td>2402</td>
-<td>3</td>
-<td>Maricopa County</td>
-<td>county</td>
-<td>AZ</td>
-<td>AZ</td>
-<td>Phoenix-Mesa-Chandler, AZ</td>
-<td>04</td>
-<td>013</td>
-<td>142829.577207</td>
-<td>...</td>
-<td>469164.401050</td>
-<td>468562.421846</td>
-<td>467451.263586</td>
-<td>466509.197532</td>
-<td>465782.610071</td>
-<td>465120.188374</td>
-<td>464544.544452</td>
-<td>463613.340231</td>
-<td>88.0</td>
-<td>POLYGON ((-113.33376 33.99923, -113.33389 32.5...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06073</td>
-<td>2841</td>
-<td>4</td>
-<td>San Diego County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>San Diego-Chula Vista-Carlsbad, CA</td>
-<td>06</td>
-<td>073</td>
-<td>212384.876155</td>
-<td>...</td>
-<td>931835.812500</td>
-<td>933267.733074</td>
-<td>932833.552309</td>
-<td>932389.735948</td>
-<td>931683.464702</td>
-<td>931874.623336</td>
-<td>932380.083872</td>
-<td>932486.305190</td>
-<td>212.0</td>
-<td>POLYGON ((-117.61109 33.33401, -117.57155 33.3...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/31007</td>
-<td>846</td>
-<td>3206</td>
-<td>Banner County</td>
-<td>county</td>
-<td>NE</td>
-<td>NE</td>
-<td>Scottsbluff, NE</td>
-<td>31</td>
-<td>007</td>
-<td>NaN</td>
-<td>...</td>
-<td>321838.022818</td>
-<td>323894.525181</td>
-<td>330340.241603</td>
-<td>340048.056447</td>
-<td>348255.690352</td>
-<td>351834.125302</td>
-<td>356282.247220</td>
-<td>361271.153620</td>
-<td>1577.0</td>
-<td>POLYGON ((-104.0527 41.69797, -104.0523 41.393...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/49009</td>
-<td>1648</td>
-<td>3207</td>
-<td>Daggett County</td>
-<td>county</td>
-<td>UT</td>
-<td>UT</td>
-<td>NaN</td>
-<td>49</td>
-<td>009</td>
-<td>NaN</td>
-<td>...</td>
-<td>308761.377915</td>
-<td>306617.625821</td>
-<td>306556.018166</td>
-<td>308889.348086</td>
-<td>313334.046432</td>
-<td>316926.936602</td>
-<td>320636.922888</td>
-<td>323907.317207</td>
-<td>2519.0</td>
-<td>POLYGON ((-110.00028 40.81368, -109.99332 40.8...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/31171</td>
-<td>1432</td>
-<td>3208</td>
-<td>Thomas County</td>
-<td>county</td>
-<td>NE</td>
-<td>NE</td>
-<td>NaN</td>
-<td>31</td>
-<td>171</td>
-<td>NaN</td>
-<td>...</td>
-<td>160305.518515</td>
-<td>160113.204884</td>
-<td>160637.460741</td>
-<td>161362.378182</td>
-<td>162603.377093</td>
-<td>162802.298298</td>
-<td>162976.347349</td>
-<td>162721.311102</td>
-<td>1586.0</td>
-<td>POLYGON ((-100.84611 42.08818, -100.84436 41.9...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/31117</td>
-<td>2794</td>
-<td>3212</td>
-<td>McPherson County</td>
-<td>county</td>
-<td>NE</td>
-<td>NE</td>
-<td>North Platte, NE</td>
-<td>31</td>
-<td>117</td>
-<td>NaN</td>
-<td>...</td>
-<td>288823.914423</td>
-<td>291261.158616</td>
-<td>298216.019609</td>
-<td>308135.413909</td>
-<td>317357.571317</td>
-<td>322473.200324</td>
-<td>328341.338278</td>
-<td>331465.598015</td>
-<td>1574.0</td>
-<td>POLYGON ((-101.40612 41.74321, -101.40724 41.3...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/30069</td>
-<td>2825</td>
-<td>3214</td>
-<td>Petroleum County</td>
-<td>county</td>
-<td>MT</td>
-<td>MT</td>
-<td>NaN</td>
-<td>30</td>
-<td>069</td>
-<td>NaN</td>
-<td>...</td>
-<td>186905.628454</td>
-<td>186885.190954</td>
-<td>188831.845652</td>
-<td>191958.311933</td>
-<td>196730.120070</td>
-<td>200622.782446</td>
-<td>205937.339516</td>
-<td>210134.086763</td>
-<td>1527.0</td>
-<td>POLYGON ((-108.73686 47.09823, -108.60894 47.0...</td>
-</tr>
-</tbody>
-</table>
-
-<p>3073 rows × 312 columns</p>
 </div>
-</div>
-</div>
-<div id="dc11ef66" class="cell" data-execution_count="7">
+<div id="6" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>zhvi_gdf <span class="op">=</span> gpd.GeoDataFrame(df, geometry<span class="op">=</span><span class="st">"geometry"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>zhvi_gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="7">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionID</th>
-<th data-quarto-table-cell-role="th">SizeRank</th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">RegionType</th>
-<th data-quarto-table-cell-role="th">StateName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">Metro</th>
-<th data-quarto-table-cell-role="th">StateCodeFIPS</th>
-<th data-quarto-table-cell-role="th">MunicipalCodeFIPS</th>
-<th data-quarto-table-cell-role="th">2000-01-31</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">2024-06-30</th>
-<th data-quarto-table-cell-role="th">2024-07-31</th>
-<th data-quarto-table-cell-role="th">2024-08-31</th>
-<th data-quarto-table-cell-role="th">2024-09-30</th>
-<th data-quarto-table-cell-role="th">2024-10-31</th>
-<th data-quarto-table-cell-role="th">2024-11-30</th>
-<th data-quarto-table-cell-role="th">2024-12-31</th>
-<th data-quarto-table-cell-role="th">2025-01-31</th>
-<th data-quarto-table-cell-role="th">index</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06037</td>
-<td>3101</td>
-<td>0</td>
-<td>Los Angeles County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>Los Angeles-Long Beach-Anaheim, CA</td>
-<td>06</td>
-<td>037</td>
-<td>206685.940073</td>
-<td>...</td>
-<td>853328.259951</td>
-<td>856958.247702</td>
-<td>862129.887015</td>
-<td>868712.125738</td>
-<td>873819.306305</td>
-<td>877921.805494</td>
-<td>881313.863788</td>
-<td>880547.372613</td>
-<td>218.0</td>
-<td>MULTIPOLYGON (((-118.67855 33.02634, -118.6748...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/17031</td>
-<td>139</td>
-<td>1</td>
-<td>Cook County</td>
-<td>county</td>
-<td>IL</td>
-<td>IL</td>
-<td>Chicago-Naperville-Elgin, IL-IN-WI</td>
-<td>17</td>
-<td>031</td>
-<td>145737.060609</td>
-<td>...</td>
-<td>300652.787054</td>
-<td>301303.254592</td>
-<td>302118.600852</td>
-<td>302781.699599</td>
-<td>303133.869223</td>
-<td>303523.016515</td>
-<td>304181.858348</td>
-<td>305000.265124</td>
-<td>635.0</td>
-<td>POLYGON ((-88.26308 42.06686, -88.26272 41.986...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/48201</td>
-<td>1090</td>
-<td>2</td>
-<td>Harris County</td>
-<td>county</td>
-<td>TX</td>
-<td>TX</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>48</td>
-<td>201</td>
-<td>109327.540062</td>
-<td>...</td>
-<td>283161.721769</td>
-<td>282792.559444</td>
-<td>282454.169156</td>
-<td>282239.614216</td>
-<td>281873.680565</td>
-<td>281423.466788</td>
-<td>281191.554410</td>
-<td>281000.895149</td>
-<td>2362.0</td>
-<td>POLYGON ((-95.96052 30.16368, -95.92658 30.068...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/04013</td>
-<td>2402</td>
-<td>3</td>
-<td>Maricopa County</td>
-<td>county</td>
-<td>AZ</td>
-<td>AZ</td>
-<td>Phoenix-Mesa-Chandler, AZ</td>
-<td>04</td>
-<td>013</td>
-<td>142829.577207</td>
-<td>...</td>
-<td>469164.401050</td>
-<td>468562.421846</td>
-<td>467451.263586</td>
-<td>466509.197532</td>
-<td>465782.610071</td>
-<td>465120.188374</td>
-<td>464544.544452</td>
-<td>463613.340231</td>
-<td>88.0</td>
-<td>POLYGON ((-113.33376 33.99923, -113.33389 32.5...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06073</td>
-<td>2841</td>
-<td>4</td>
-<td>San Diego County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>San Diego-Chula Vista-Carlsbad, CA</td>
-<td>06</td>
-<td>073</td>
-<td>212384.876155</td>
-<td>...</td>
-<td>931835.812500</td>
-<td>933267.733074</td>
-<td>932833.552309</td>
-<td>932389.735948</td>
-<td>931683.464702</td>
-<td>931874.623336</td>
-<td>932380.083872</td>
-<td>932486.305190</td>
-<td>212.0</td>
-<td>POLYGON ((-117.61109 33.33401, -117.57155 33.3...</td>
-</tr>
-</tbody>
-</table>
-
-<p>5 rows × 312 columns</p>
 </div>
-</div>
-</div>
-<div id="f6f63a4e" class="cell" data-execution_count="8">
+<div id="7" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>column <span class="op">=</span> <span class="st">"2024-10-31"</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> zhvi_gdf[[<span class="st">"RegionName"</span>, <span class="st">"State"</span>, column, <span class="st">"geometry"</span>]]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="8">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">2024-10-31</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06037</td>
-<td>Los Angeles County</td>
-<td>CA</td>
-<td>873819.306305</td>
-<td>MULTIPOLYGON (((-118.67855 33.02634, -118.6748...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/17031</td>
-<td>Cook County</td>
-<td>IL</td>
-<td>303133.869223</td>
-<td>POLYGON ((-88.26308 42.06686, -88.26272 41.986...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/48201</td>
-<td>Harris County</td>
-<td>TX</td>
-<td>281873.680565</td>
-<td>POLYGON ((-95.96052 30.16368, -95.92658 30.068...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/04013</td>
-<td>Maricopa County</td>
-<td>AZ</td>
-<td>465782.610071</td>
-<td>POLYGON ((-113.33376 33.99923, -113.33389 32.5...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06073</td>
-<td>San Diego County</td>
-<td>CA</td>
-<td>931683.464702</td>
-<td>POLYGON ((-117.61109 33.33401, -117.57155 33.3...</td>
-</tr>
-</tbody>
-</table>
-
 </div>
-</div>
-</div>
-<div id="c011c8fc" class="cell" data-execution_count="9">
+<div id="8" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(style<span class="op">=</span><span class="st">"liberty"</span>)</span>
@@ -956,13 +242,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>m.add_layer_control()</span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"8afed91e590c46cfbadc6d271acf9112","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
 </div>
-</div>
-<div id="a26c9f0c" class="cell" data-execution_count="10">
+<div id="9" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(style<span class="op">=</span><span class="st">"liberty"</span>, pitch<span class="op">=</span><span class="dv">60</span>)</span>
@@ -978,13 +259,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>m.add_layer_control()</span>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"73fa6c11e7724e3cabefe692835a12c6","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
 </div>
-</div>
-<div id="057ad6a8" class="cell" data-execution_count="11">
+<div id="10" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>embeddings <span class="op">=</span> pd.read_csv(<span class="st">"/home/zyang91/Desktop/us/county_embeddings.csv"</span>).set_index(</span>
@@ -992,448 +268,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>embeddings.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="11">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">state</th>
-<th data-quarto-table-cell-role="th">county</th>
-<th data-quarto-table-cell-role="th">population</th>
-<th data-quarto-table-cell-role="th">latitude</th>
-<th data-quarto-table-cell-role="th">longitude</th>
-<th data-quarto-table-cell-role="th">feature0</th>
-<th data-quarto-table-cell-role="th">feature1</th>
-<th data-quarto-table-cell-role="th">feature2</th>
-<th data-quarto-table-cell-role="th">feature3</th>
-<th data-quarto-table-cell-role="th">feature4</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">feature320</th>
-<th data-quarto-table-cell-role="th">feature321</th>
-<th data-quarto-table-cell-role="th">feature322</th>
-<th data-quarto-table-cell-role="th">feature323</th>
-<th data-quarto-table-cell-role="th">feature324</th>
-<th data-quarto-table-cell-role="th">feature325</th>
-<th data-quarto-table-cell-role="th">feature326</th>
-<th data-quarto-table-cell-role="th">feature327</th>
-<th data-quarto-table-cell-role="th">feature328</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">place</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01001</td>
-<td>AL</td>
-<td>Autauga County</td>
-<td>58761</td>
-<td>32.532237</td>
-<td>-86.646439</td>
-<td>-0.059204</td>
-<td>1.153834</td>
-<td>0.286746</td>
-<td>0.324178</td>
-<td>1.003599</td>
-<td>...</td>
-<td>-0.059415</td>
-<td>-0.165617</td>
-<td>0.816348</td>
-<td>-0.167234</td>
-<td>2.099072</td>
-<td>-0.168644</td>
-<td>1.155944</td>
-<td>1.620912</td>
-<td>-0.089127</td>
-<td>4.831956</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/01003</td>
-<td>AL</td>
-<td>Baldwin County</td>
-<td>233420</td>
-<td>30.659218</td>
-<td>-87.746067</td>
-<td>-0.089298</td>
-<td>0.710666</td>
-<td>0.358453</td>
-<td>1.138983</td>
-<td>2.012795</td>
-<td>...</td>
-<td>-0.167371</td>
-<td>0.049021</td>
-<td>0.892724</td>
-<td>-0.061048</td>
-<td>2.791007</td>
-<td>-0.166232</td>
-<td>0.276117</td>
-<td>2.892894</td>
-<td>-0.128016</td>
-<td>4.151655</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01005</td>
-<td>AL</td>
-<td>Barbour County</td>
-<td>24877</td>
-<td>31.870253</td>
-<td>-85.405103</td>
-<td>-0.089458</td>
-<td>1.756277</td>
-<td>0.749515</td>
-<td>0.796651</td>
-<td>0.555815</td>
-<td>...</td>
-<td>-0.110057</td>
-<td>-0.013691</td>
-<td>0.346536</td>
-<td>-0.106772</td>
-<td>2.986117</td>
-<td>-0.104402</td>
-<td>-0.059600</td>
-<td>1.893656</td>
-<td>-0.147867</td>
-<td>0.032731</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/01007</td>
-<td>AL</td>
-<td>Bibb County</td>
-<td>22251</td>
-<td>33.015893</td>
-<td>-87.127148</td>
-<td>-0.117877</td>
-<td>0.725561</td>
-<td>0.436291</td>
-<td>0.307150</td>
-<td>1.347822</td>
-<td>...</td>
-<td>-0.169970</td>
-<td>-0.168179</td>
-<td>1.796390</td>
-<td>-0.128314</td>
-<td>1.395750</td>
-<td>-0.084409</td>
-<td>3.489884</td>
-<td>1.249768</td>
-<td>-0.028330</td>
-<td>4.688914</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01009</td>
-<td>AL</td>
-<td>Blount County</td>
-<td>59077</td>
-<td>33.977357</td>
-<td>-86.566440</td>
-<td>-0.133150</td>
-<td>0.648858</td>
-<td>0.592053</td>
-<td>0.382824</td>
-<td>1.486730</td>
-<td>...</td>
-<td>-0.167436</td>
-<td>0.689164</td>
-<td>2.527887</td>
-<td>-0.045288</td>
-<td>0.530547</td>
-<td>-0.156357</td>
-<td>1.227069</td>
-<td>1.439654</td>
-<td>-0.045479</td>
-<td>3.491446</td>
-</tr>
-</tbody>
-</table>
-
-<p>5 rows × 335 columns</p>
 </div>
-</div>
-</div>
-<div id="7795b952" class="cell" data-execution_count="12">
+<div id="11" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> embeddings.join(county_gdf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="ec4d19bc" class="cell" data-execution_count="13">
+<div id="12" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>embeddings_gdf <span class="op">=</span> gpd.GeoDataFrame(df, geometry<span class="op">=</span><span class="st">"geometry"</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>embeddings_gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="13">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">state</th>
-<th data-quarto-table-cell-role="th">county</th>
-<th data-quarto-table-cell-role="th">population</th>
-<th data-quarto-table-cell-role="th">latitude</th>
-<th data-quarto-table-cell-role="th">longitude</th>
-<th data-quarto-table-cell-role="th">feature0</th>
-<th data-quarto-table-cell-role="th">feature1</th>
-<th data-quarto-table-cell-role="th">feature2</th>
-<th data-quarto-table-cell-role="th">feature3</th>
-<th data-quarto-table-cell-role="th">feature4</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">feature322</th>
-<th data-quarto-table-cell-role="th">feature323</th>
-<th data-quarto-table-cell-role="th">feature324</th>
-<th data-quarto-table-cell-role="th">feature325</th>
-<th data-quarto-table-cell-role="th">feature326</th>
-<th data-quarto-table-cell-role="th">feature327</th>
-<th data-quarto-table-cell-role="th">feature328</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-<th data-quarto-table-cell-role="th">index</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">place</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01001</td>
-<td>AL</td>
-<td>Autauga County</td>
-<td>58761</td>
-<td>32.532237</td>
-<td>-86.646439</td>
-<td>-0.059204</td>
-<td>1.153834</td>
-<td>0.286746</td>
-<td>0.324178</td>
-<td>1.003599</td>
-<td>...</td>
-<td>0.816348</td>
-<td>-0.167234</td>
-<td>2.099072</td>
-<td>-0.168644</td>
-<td>1.155944</td>
-<td>1.620912</td>
-<td>-0.089127</td>
-<td>4.831956</td>
-<td>56</td>
-<td>POLYGON ((-86.91743 32.66417, -86.9212 32.6565...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/01003</td>
-<td>AL</td>
-<td>Baldwin County</td>
-<td>233420</td>
-<td>30.659218</td>
-<td>-87.746067</td>
-<td>-0.089298</td>
-<td>0.710666</td>
-<td>0.358453</td>
-<td>1.138983</td>
-<td>2.012795</td>
-<td>...</td>
-<td>0.892724</td>
-<td>-0.061048</td>
-<td>2.791007</td>
-<td>-0.166232</td>
-<td>0.276117</td>
-<td>2.892894</td>
-<td>-0.128016</td>
-<td>4.151655</td>
-<td>64</td>
-<td>MULTIPOLYGON (((-87.44728 30.51503, -87.44562 ...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01005</td>
-<td>AL</td>
-<td>Barbour County</td>
-<td>24877</td>
-<td>31.870253</td>
-<td>-85.405103</td>
-<td>-0.089458</td>
-<td>1.756277</td>
-<td>0.749515</td>
-<td>0.796651</td>
-<td>0.555815</td>
-<td>...</td>
-<td>0.346536</td>
-<td>-0.106772</td>
-<td>2.986117</td>
-<td>-0.104402</td>
-<td>-0.059600</td>
-<td>1.893656</td>
-<td>-0.147867</td>
-<td>0.032731</td>
-<td>51</td>
-<td>POLYGON ((-85.74827 31.61803, -85.54881 31.618...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/01007</td>
-<td>AL</td>
-<td>Bibb County</td>
-<td>22251</td>
-<td>33.015893</td>
-<td>-87.127148</td>
-<td>-0.117877</td>
-<td>0.725561</td>
-<td>0.436291</td>
-<td>0.307150</td>
-<td>1.347822</td>
-<td>...</td>
-<td>1.796390</td>
-<td>-0.128314</td>
-<td>1.395750</td>
-<td>-0.084409</td>
-<td>3.489884</td>
-<td>1.249768</td>
-<td>-0.028330</td>
-<td>4.688914</td>
-<td>20</td>
-<td>POLYGON ((-87.42192 33.0034, -87.42075 32.8846...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01009</td>
-<td>AL</td>
-<td>Blount County</td>
-<td>59077</td>
-<td>33.977357</td>
-<td>-86.566440</td>
-<td>-0.133150</td>
-<td>0.648858</td>
-<td>0.592053</td>
-<td>0.382824</td>
-<td>1.486730</td>
-<td>...</td>
-<td>2.527887</td>
-<td>-0.045288</td>
-<td>0.530547</td>
-<td>-0.156357</td>
-<td>1.227069</td>
-<td>1.439654</td>
-<td>-0.045479</td>
-<td>3.491446</td>
-<td>15</td>
-<td>POLYGON ((-86.96227 33.85816, -86.96294 33.844...</td>
-</tr>
-</tbody>
-</table>
-
-<p>5 rows × 337 columns</p>
 </div>
-</div>
-</div>
-<div id="4829e110" class="cell" data-execution_count="22">
+<div id="13" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>column <span class="op">=</span> <span class="st">"feature329"</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> embeddings_gdf[[<span class="st">"state"</span>, column, <span class="st">"geometry"</span>]]</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="22">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">state</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">place</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01001</td>
-<td>AL</td>
-<td>4.831956</td>
-<td>POLYGON ((-86.91743 32.66417, -86.9212 32.6565...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/01003</td>
-<td>AL</td>
-<td>4.151655</td>
-<td>MULTIPOLYGON (((-87.44728 30.51503, -87.44562 ...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01005</td>
-<td>AL</td>
-<td>0.032731</td>
-<td>POLYGON ((-85.74827 31.61803, -85.54881 31.618...</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/01007</td>
-<td>AL</td>
-<td>4.688914</td>
-<td>POLYGON ((-87.42192 33.0034, -87.42075 32.8846...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/01009</td>
-<td>AL</td>
-<td>3.491446</td>
-<td>POLYGON ((-86.96227 33.85816, -86.96294 33.844...</td>
-</tr>
-</tbody>
-</table>
-
 </div>
-</div>
-</div>
-<div id="982c677a" class="cell" data-execution_count="16">
+<div id="14" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(style<span class="op">=</span><span class="st">"liberty"</span>)</span>
@@ -1447,13 +304,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>m.add_layer_control()</span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"009d8f911b994b2c97436c8b0d352428","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
 </div>
-</div>
-<div id="4a375858" class="cell" data-execution_count="23">
+<div id="15" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(style<span class="op">=</span><span class="st">"liberty"</span>, pitch<span class="op">=</span><span class="dv">60</span>)</span>
@@ -1469,191 +321,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>m.add_layer_control()</span>
 <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"e05e7419284648f287c2d0077bd474d8","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
 </div>
-</div>
-<div id="ca9f6bb2" class="cell" data-execution_count="24">
+<div id="16" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> zhvi_df.join(embeddings, how<span class="op">=</span><span class="st">"inner"</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="24">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionID</th>
-<th data-quarto-table-cell-role="th">SizeRank</th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">RegionType</th>
-<th data-quarto-table-cell-role="th">StateName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">Metro</th>
-<th data-quarto-table-cell-role="th">StateCodeFIPS</th>
-<th data-quarto-table-cell-role="th">MunicipalCodeFIPS</th>
-<th data-quarto-table-cell-role="th">2000-01-31</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">feature320</th>
-<th data-quarto-table-cell-role="th">feature321</th>
-<th data-quarto-table-cell-role="th">feature322</th>
-<th data-quarto-table-cell-role="th">feature323</th>
-<th data-quarto-table-cell-role="th">feature324</th>
-<th data-quarto-table-cell-role="th">feature325</th>
-<th data-quarto-table-cell-role="th">feature326</th>
-<th data-quarto-table-cell-role="th">feature327</th>
-<th data-quarto-table-cell-role="th">feature328</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06037</td>
-<td>3101</td>
-<td>0</td>
-<td>Los Angeles County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>Los Angeles-Long Beach-Anaheim, CA</td>
-<td>06</td>
-<td>037</td>
-<td>206685.940073</td>
-<td>...</td>
-<td>-7.000000e-08</td>
-<td>-0.001461</td>
-<td>-0.035212</td>
-<td>1.910339</td>
-<td>-0.147769</td>
-<td>0.003667</td>
-<td>-0.164598</td>
-<td>-0.000012</td>
-<td>-0.000000</td>
-<td>1.520711</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/17031</td>
-<td>139</td>
-<td>1</td>
-<td>Cook County</td>
-<td>county</td>
-<td>IL</td>
-<td>IL</td>
-<td>Chicago-Naperville-Elgin, IL-IN-WI</td>
-<td>17</td>
-<td>031</td>
-<td>145737.060609</td>
-<td>...</td>
-<td>-7.855540e-02</td>
-<td>-0.160230</td>
-<td>2.425814</td>
-<td>-0.048814</td>
-<td>-0.038273</td>
-<td>-0.084591</td>
-<td>2.993729</td>
-<td>2.485846</td>
-<td>-0.000042</td>
-<td>2.314278</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/48201</td>
-<td>1090</td>
-<td>2</td>
-<td>Harris County</td>
-<td>county</td>
-<td>TX</td>
-<td>TX</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>48</td>
-<td>201</td>
-<td>109327.540062</td>
-<td>...</td>
-<td>-3.441770e-02</td>
-<td>-0.008643</td>
-<td>-0.157201</td>
-<td>2.186765</td>
-<td>5.300742</td>
-<td>6.407553</td>
-<td>0.975400</td>
-<td>3.072631</td>
-<td>-0.000006</td>
-<td>1.600721</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/04013</td>
-<td>2402</td>
-<td>3</td>
-<td>Maricopa County</td>
-<td>county</td>
-<td>AZ</td>
-<td>AZ</td>
-<td>Phoenix-Mesa-Chandler, AZ</td>
-<td>04</td>
-<td>013</td>
-<td>142829.577207</td>
-<td>...</td>
-<td>-1.682885e-01</td>
-<td>-0.099206</td>
-<td>4.709348</td>
-<td>0.263209</td>
-<td>0.575408</td>
-<td>4.380611</td>
-<td>6.630384</td>
-<td>-0.166023</td>
-<td>-0.000919</td>
-<td>3.876134</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/06073</td>
-<td>2841</td>
-<td>4</td>
-<td>San Diego County</td>
-<td>county</td>
-<td>CA</td>
-<td>CA</td>
-<td>San Diego-Chula Vista-Carlsbad, CA</td>
-<td>06</td>
-<td>073</td>
-<td>212384.876155</td>
-<td>...</td>
-<td>-2.194900e-04</td>
-<td>-0.000305</td>
-<td>0.408058</td>
-<td>0.252055</td>
-<td>-0.164628</td>
-<td>0.019952</td>
-<td>2.901626</td>
-<td>-0.000021</td>
-<td>-0.000002</td>
-<td>0.716236</td>
-</tr>
-</tbody>
-</table>
-
-<p>5 rows × 645 columns</p>
 </div>
-</div>
-</div>
-<div id="dc1aab87" class="cell" data-execution_count="25">
+<div id="17" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>embedding_features <span class="op">=</span> [<span class="ss">f"feature</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">330</span>)]</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> <span class="st">"2024-10-31"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="a50e8139" class="cell" data-execution_count="26">
+<div id="18" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.dropna(subset<span class="op">=</span>[label])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="a588ce43" class="cell" data-execution_count="27">
+<div id="19" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[embedding_features <span class="op">+</span> [label]]</span>
@@ -1664,7 +353,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="56c6a565" class="cell" data-execution_count="28">
+<div id="20" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LinearRegression()</span>
@@ -1672,299 +361,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(x_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="0f561206" class="cell" data-execution_count="30">
+<div id="21" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>evaluation_df <span class="op">=</span> pd.DataFrame({<span class="st">"y"</span>: y_test, <span class="st">"y_pred"</span>: y_pred})</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> evaluate_model(evaluation_df)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'r2': 0.8269914580761699, 'r': np.float64(0.9125487145276073), 'rmse': 61093.7358171606, 'mae': 43101.94549189267, 'mape': 0.1957361870440549}</code></pre>
 </div>
-</div>
-<div id="3f3705ba" class="cell" data-execution_count="35">
+<div id="22" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>xy_lim <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">1000000</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    evaluation_df,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Linear Regression: Actual vs Predicted"</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual Home Value"</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted Home Value"</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>xy_lim <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">1000000</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    evaluation_df,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Linear Regression: Actual vs Predicted"</span>,</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual Home Value"</span>,</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted Home Value"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<pre><code>Unable to display output for mime type(s): application/vnd.plotly.v1+json</code></pre>
 </div>
-</div>
-<div id="198d4d13" class="cell" data-execution_count="36">
+<div id="23" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> evaluation_df.join(gdf)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"difference"</span>] <span class="op">=</span> df[<span class="st">"y"</span>] <span class="op">-</span> df[<span class="st">"y_pred"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> evaluation_df.join(gdf)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"difference"</span>] <span class="op">=</span> df[<span class="st">"y"</span>] <span class="op">-</span> df[<span class="st">"y_pred"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="449930bd" class="cell" data-execution_count="38">
+<div id="24" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="38">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">y</th>
-<th data-quarto-table-cell-role="th">y_pred</th>
-<th data-quarto-table-cell-role="th">state</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-<th data-quarto-table-cell-role="th">category</th>
-<th data-quarto-table-cell-role="th">color</th>
-<th data-quarto-table-cell-role="th">difference</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/34017</td>
-<td>598888.295081</td>
-<td>776849.887625</td>
-<td>NJ</td>
-<td>-6.000000e-08</td>
-<td>POLYGON ((-74.16456 40.75596, -74.1651 40.7427...</td>
-<td>1</td>
-<td>#f7fbff</td>
-<td>-177961.592544</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/48411</td>
-<td>192620.109978</td>
-<td>180320.802383</td>
-<td>TX</td>
-<td>1.929096e-01</td>
-<td>POLYGON ((-99.09189 30.92198, -98.72061 30.921...</td>
-<td>1</td>
-<td>#f7fbff</td>
-<td>12299.307595</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/21137</td>
-<td>170778.967173</td>
-<td>259197.493542</td>
-<td>KY</td>
-<td>3.470986e+00</td>
-<td>MULTIPOLYGON (((-84.74777 37.58648, -84.74418 ...</td>
-<td>4</td>
-<td>#2171b5</td>
-<td>-88418.526369</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/55007</td>
-<td>275854.538422</td>
-<td>300917.601055</td>
-<td>WI</td>
-<td>2.753146e+00</td>
-<td>POLYGON ((-91.54939 46.89321, -91.55343 46.502...</td>
-<td>4</td>
-<td>#2171b5</td>
-<td>-25063.062633</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/22081</td>
-<td>120883.872924</td>
-<td>76727.777705</td>
-<td>LA</td>
-<td>1.799954e+00</td>
-<td>MULTIPOLYGON (((-93.15244 32.00524, -93.15168 ...</td>
-<td>3</td>
-<td>#6baed6</td>
-<td>44156.095219</td>
-</tr>
-</tbody>
-</table>
-
 </div>
-</div>
-</div>
-<div id="55610792" class="cell" data-execution_count="39">
+<div id="25" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> gpd.GeoDataFrame(df, geometry<span class="op">=</span><span class="st">"geometry"</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>gdf <span class="op">=</span> gpd.GeoDataFrame(df, geometry<span class="op">=</span><span class="st">"geometry"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="39">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">y</th>
-<th data-quarto-table-cell-role="th">y_pred</th>
-<th data-quarto-table-cell-role="th">state</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-<th data-quarto-table-cell-role="th">category</th>
-<th data-quarto-table-cell-role="th">color</th>
-<th data-quarto-table-cell-role="th">difference</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/34017</td>
-<td>598888.295081</td>
-<td>776849.887625</td>
-<td>NJ</td>
-<td>-6.000000e-08</td>
-<td>POLYGON ((-74.16456 40.75596, -74.1651 40.7427...</td>
-<td>1</td>
-<td>#f7fbff</td>
-<td>-177961.592544</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/48411</td>
-<td>192620.109978</td>
-<td>180320.802383</td>
-<td>TX</td>
-<td>1.929096e-01</td>
-<td>POLYGON ((-99.09189 30.92198, -98.72061 30.921...</td>
-<td>1</td>
-<td>#f7fbff</td>
-<td>12299.307595</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/21137</td>
-<td>170778.967173</td>
-<td>259197.493542</td>
-<td>KY</td>
-<td>3.470986e+00</td>
-<td>MULTIPOLYGON (((-84.74777 37.58648, -84.74418 ...</td>
-<td>4</td>
-<td>#2171b5</td>
-<td>-88418.526369</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/55007</td>
-<td>275854.538422</td>
-<td>300917.601055</td>
-<td>WI</td>
-<td>2.753146e+00</td>
-<td>POLYGON ((-91.54939 46.89321, -91.55343 46.502...</td>
-<td>4</td>
-<td>#2171b5</td>
-<td>-25063.062633</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/22081</td>
-<td>120883.872924</td>
-<td>76727.777705</td>
-<td>LA</td>
-<td>1.799954e+00</td>
-<td>MULTIPOLYGON (((-93.15244 32.00524, -93.15168 ...</td>
-<td>3</td>
-<td>#6baed6</td>
-<td>44156.095219</td>
-</tr>
-</tbody>
-</table>
-
 </div>
-</div>
-</div>
-<div id="201e6787" class="cell" data-execution_count="40">
+<div id="26" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>gdf.drop(columns<span class="op">=</span>[<span class="st">"category"</span>, <span class="st">"color"</span>, column], inplace<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>gdf.drop(columns<span class="op">=</span>[<span class="st">"category"</span>, <span class="st">"color"</span>, column], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>gdf.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="40">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">y</th>
-<th data-quarto-table-cell-role="th">y_pred</th>
-<th data-quarto-table-cell-role="th">state</th>
-<th data-quarto-table-cell-role="th">geometry</th>
-<th data-quarto-table-cell-role="th">difference</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/34017</td>
-<td>598888.295081</td>
-<td>776849.887625</td>
-<td>NJ</td>
-<td>POLYGON ((-74.16456 40.75596, -74.1651 40.7427...</td>
-<td>-177961.592544</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/48411</td>
-<td>192620.109978</td>
-<td>180320.802383</td>
-<td>TX</td>
-<td>POLYGON ((-99.09189 30.92198, -98.72061 30.921...</td>
-<td>12299.307595</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/21137</td>
-<td>170778.967173</td>
-<td>259197.493542</td>
-<td>KY</td>
-<td>MULTIPOLYGON (((-84.74777 37.58648, -84.74418 ...</td>
-<td>-88418.526369</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">geoId/55007</td>
-<td>275854.538422</td>
-<td>300917.601055</td>
-<td>WI</td>
-<td>POLYGON ((-91.54939 46.89321, -91.55343 46.502...</td>
-<td>-25063.062633</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">geoId/22081</td>
-<td>120883.872924</td>
-<td>76727.777705</td>
-<td>LA</td>
-<td>MULTIPOLYGON (((-93.15244 32.00524, -93.15168 ...</td>
-<td>44156.095219</td>
-</tr>
-</tbody>
-</table>
-
 </div>
-</div>
-</div>
-<div id="cc9d00d1" class="cell" data-execution_count="41">
+<div id="27" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(style<span class="op">=</span><span class="st">"liberty"</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>m.add_data(</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    gdf,</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Blues"</span>,</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"difference"</span>,</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    legend_title<span class="op">=</span><span class="st">"Difference (Actual - Predicted)"</span>,</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Difference"</span>,</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>m.add_layer_control()</span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(style<span class="op">=</span><span class="st">"liberty"</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>m.add_data(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    gdf,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    cmap<span class="op">=</span><span class="st">"Blues"</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    column<span class="op">=</span><span class="st">"difference"</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    legend_title<span class="op">=</span><span class="st">"Difference (Actual - Predicted)"</span>,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    name<span class="op">=</span><span class="st">"Difference"</span>,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>m.add_layer_control()</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"3048cac9de8742279967058cce8c8e42","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
 </div>
 
 
@@ -1981,7 +440,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {
+        if (clz.startsWith('code-annotation-')) {                     
           return true;
         }
       }
@@ -2001,11 +460,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
         button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button,
-          { trigger: "manual",
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
             offset: [0, -8]});
-        tooltip.show();
+        tooltip.show();    
       }
       setTimeout(function() {
         if (tooltip) {
@@ -2081,7 +540,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       if (onUntriggerFn) {
         config.onUntrigger = onUntriggerFn;
       }
-      window.tippy(el, config);
+      window.tippy(el, config); 
     }
     const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
     for (var i=0; i<noterefs.length; i++) {
@@ -2156,7 +615,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       tippyHover(xref, undefined, function(instance) {
         instance.disable();
         let url = xref.getAttribute('href');
-        let hash = undefined;
+        let hash = undefined; 
         if (url.startsWith('#')) {
           hash = url;
         } else {
@@ -2184,7 +643,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
               if (note !== null) {
                 const html = processXRef(id, note);
                 instance.setContent(html);
-              }
+              } 
             }).finally(() => {
               instance.enable();
               instance.show();
@@ -2208,7 +667,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
               }
               const html = processXRef(null, note);
               instance.setContent(html);
-            }
+            } 
           }).finally(() => {
             instance.enable();
             instance.show();
@@ -2248,7 +707,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
               height = bottom - top;
             }
             if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it
+              // cook up a div (if necessary) and position it 
               let div = window.document.getElementById("code-annotation-line-highlight");
               if (div === null) {
                 div = window.document.createElement("div");

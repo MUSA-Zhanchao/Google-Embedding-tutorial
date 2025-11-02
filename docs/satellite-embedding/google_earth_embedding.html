@@ -17,7 +17,7 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
@@ -58,7 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -102,10 +102,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 
 
 </head>
@@ -128,12 +124,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../index.html">
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
-  </li>
+  </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../slides/slides.html">
+    <a class="nav-link" href="../slides/slides.html"> 
 <span class="menu-text">Presentation</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-demos" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Demos</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-demos">    
+        <li>
+    <a class="dropdown-item" href="../satellite-embedding/demo2/landcover-classification.html">
+ <span class="dropdown-text">Demo 2: Land Cover Classification with K-Means Clustering (reformatted)</span></a>
+  </li>  
+    </ul>
   </li>
 </ul>
           </div> <!-- /navcollapse -->
@@ -147,7 +154,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
@@ -155,283 +162,90 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div id="fdcbe0b1-7666-4c43-b0cd-790bb26049b7" class="cell" data-execution_count="1">
+<div id="0" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> ee</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="f21de12c-9490-49cd-bbcc-4fe47e4ad5d8" class="cell" data-execution_count="2">
+<div id="1" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> leafmap.maplibregl <span class="im">as</span> leafmap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="23ae78c4-95f7-4393-b71b-0f32a2c92b4c" class="cell" data-execution_count="3">
+<div id="2" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ee.Authenticate()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<pre><code>True</code></pre>
 </div>
-</div>
-<div id="bb2b1201-ae0a-4d2f-af4c-79328d915214" class="cell" data-execution_count="4">
+<div id="3" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ee.Initialize(project<span class="op">=</span><span class="st">"ee-zhanchaoyang"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ee.Initialize(project<span class="op">=</span><span class="st">"ee-zhanchaoyang"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="56ef687f-71c2-455e-a970-3a6ba7de5494" class="cell" data-execution_count="5">
+<div id="4" class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(projection<span class="op">=</span><span class="st">"globe"</span>, sidebar_visible<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>m.add_basemap(<span class="st">"USGS.Imagery"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>m.add_alphaearth_gui()</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="5" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(projection<span class="op">=</span><span class="st">"globe"</span>, sidebar_visible<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>m.add_basemap(<span class="st">"USGS.Imagery"</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>m.add_alphaearth_gui()</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"63774d180c954492b64ebef9664f10e1","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
 </div>
-</div>
-<div id="f851e57d-f41b-4fd0-8991-ac9bed27b46c" class="cell" data-execution_count="6">
+<div id="6" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> leafmap.Map(projection<span class="op">=</span><span class="st">"globe"</span>, sidebar_visible<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>m.add_basemap(<span class="st">"USGS.Imagery"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lon <span class="op">=</span> <span class="op">-</span><span class="fl">75.191</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>lat <span class="op">=</span> <span class="fl">39.9515</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>m.set_center(lon, lat, zoom<span class="op">=</span><span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-
-            <style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-
 </div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"ee500c228fd446c6b329fb8bed1d4f53","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
-</div>
-<div id="8d473a3d-1de8-49fb-bcd2-e48fc4a1a2e9" class="cell" data-execution_count="7">
+<div id="7" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lon <span class="op">=</span> <span class="op">-</span><span class="fl">121.8036</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>lat <span class="op">=</span> <span class="fl">39.0372</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>m.set_center(lon, lat, zoom<span class="op">=</span><span class="dv">12</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> ee.Geometry.Point(lon, lat)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> ee.ImageCollection(<span class="st">"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-
-            <style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-
 </div>
-</div>
-<div id="71f45861-d5bf-43b9-8ef7-e2eb16bb3482" class="cell" data-execution_count="8">
+<div id="8" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>point <span class="op">=</span> ee.Geometry.Point(lon, lat)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> ee.ImageCollection(<span class="st">"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>image1 <span class="op">=</span> dataset.filterDate(<span class="st">"2017-01-01"</span>, <span class="st">"2018-01-01"</span>).filterBounds(point).first()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>image2 <span class="op">=</span> dataset.filterDate(<span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>).filterBounds(point).first()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-
-            <style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-
 </div>
-</div>
-<div id="0417fff2-0cc4-427b-9f62-ec4020e91894" class="cell" data-execution_count="9">
+<div id="9" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>image1 <span class="op">=</span> dataset.filterDate(<span class="st">"2017-01-01"</span>, <span class="st">"2018-01-01"</span>).filterBounds(point).first()</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>image2 <span class="op">=</span> dataset.filterDate(<span class="st">"2024-01-01"</span>, <span class="st">"2025-01-01"</span>).filterBounds(point).first()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>vis_params <span class="op">=</span> {<span class="st">"min"</span>: <span class="op">-</span><span class="fl">0.3</span>, <span class="st">"max"</span>: <span class="fl">0.3</span>, <span class="st">"bands"</span>: [<span class="st">"A01"</span>, <span class="st">"A16"</span>, <span class="st">"A09"</span>]}</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>m.add_ee_layer(image1, vis_params, name<span class="op">=</span><span class="st">"Year 1 embeddings"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>m.add_ee_layer(image2, vis_params, name<span class="op">=</span><span class="st">"Year 2 embeddings"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-
-            <style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-
 </div>
-</div>
-<div id="7435ca4a-cbba-45e5-9dc7-4570e39899a4" class="cell" data-execution_count="10">
+<div id="10" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>vis_params <span class="op">=</span> {<span class="st">"min"</span>: <span class="op">-</span><span class="fl">0.3</span>, <span class="st">"max"</span>: <span class="fl">0.3</span>, <span class="st">"bands"</span>: [<span class="st">"A01"</span>, <span class="st">"A16"</span>, <span class="st">"A09"</span>]}</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>m.add_ee_layer(image1, vis_params, name<span class="op">=</span><span class="st">"Year 1 embeddings"</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>m.add_ee_layer(image2, vis_params, name<span class="op">=</span><span class="st">"Year 2 embeddings"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>dot_prod <span class="op">=</span> image1.multiply(image2).<span class="bu">reduce</span>(ee.Reducer.<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-
-            <style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-
 </div>
-</div>
-<div id="5c135d88-2bd7-460c-afb7-79773d30a40b" class="cell" data-execution_count="11">
+<div id="11" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dot_prod <span class="op">=</span> image1.multiply(image2).<span class="bu">reduce</span>(ee.Reducer.<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>vis_params <span class="op">=</span> {<span class="st">"min"</span>: <span class="dv">0</span>, <span class="st">"max"</span>: <span class="dv">1</span>, <span class="st">"palette"</span>: [<span class="st">"white"</span>, <span class="st">"black"</span>]}</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>m.add_ee_layer(dot_prod, vis_params, name<span class="op">=</span><span class="st">"Similarity"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-
-            <style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-
-</div>
-</div>
-<div id="3ac722ea-0625-40d0-98e5-07b6f6af6376" class="cell" data-execution_count="12">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>vis_params <span class="op">=</span> {<span class="st">"min"</span>: <span class="dv">0</span>, <span class="st">"max"</span>: <span class="dv">1</span>, <span class="st">"palette"</span>: [<span class="st">"white"</span>, <span class="st">"black"</span>]}</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>m.add_ee_layer(dot_prod, vis_params, name<span class="op">=</span><span class="st">"Similarity"</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>m</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-display">
-
-            <style>
-                .geemap-dark {
-                    --jp-widgets-color: white;
-                    --jp-widgets-label-color: white;
-                    --jp-ui-font-color1: white;
-                    --jp-layout-color2: #454545;
-                    background-color: #383838;
-                }
-
-                .geemap-dark .jupyter-button {
-                    --jp-layout-color3: #383838;
-                }
-
-                .geemap-colab {
-                    background-color: var(--colab-primary-surface-color, white);
-                }
-
-                .geemap-colab .jupyter-button {
-                    --jp-layout-color3: var(--colab-primary-surface-color, white);
-                }
-            </style>
-
-</div>
-<div class="cell-output cell-output-display">
-<script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"ee500c228fd446c6b329fb8bed1d4f53","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
-</script>
-</div>
 </div>
 
 
@@ -448,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
-        if (clz.startsWith('code-annotation-')) {
+        if (clz.startsWith('code-annotation-')) {                     
           return true;
         }
       }
@@ -468,11 +282,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         button.setAttribute("data-bs-toggle", "tooltip");
         button.setAttribute("data-bs-placement", "left");
         button.setAttribute("data-bs-title", "Copied!");
-        tooltip = new bootstrap.Tooltip(button,
-          { trigger: "manual",
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
             customClass: "code-copy-button-tooltip",
             offset: [0, -8]});
-        tooltip.show();
+        tooltip.show();    
       }
       setTimeout(function() {
         if (tooltip) {
@@ -548,7 +362,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       if (onUntriggerFn) {
         config.onUntrigger = onUntriggerFn;
       }
-      window.tippy(el, config);
+      window.tippy(el, config); 
     }
     const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
     for (var i=0; i<noterefs.length; i++) {
@@ -623,7 +437,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       tippyHover(xref, undefined, function(instance) {
         instance.disable();
         let url = xref.getAttribute('href');
-        let hash = undefined;
+        let hash = undefined; 
         if (url.startsWith('#')) {
           hash = url;
         } else {
@@ -651,7 +465,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
               if (note !== null) {
                 const html = processXRef(id, note);
                 instance.setContent(html);
-              }
+              } 
             }).finally(() => {
               instance.enable();
               instance.show();
@@ -675,7 +489,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
               }
               const html = processXRef(null, note);
               instance.setContent(html);
-            }
+            } 
           }).finally(() => {
             instance.enable();
             instance.show();
@@ -715,7 +529,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
               height = bottom - top;
             }
             if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it
+              // cook up a div (if necessary) and position it 
               let div = window.document.getElementById("code-annotation-line-highlight");
               if (div === null) {
                 div = window.document.createElement("div");
