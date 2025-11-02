@@ -10,6 +10,10 @@ website:
         text: Home
       - href: slides/slides.qmd
         text: Presentation
+      - text: Demos
+        menu:
+          - href: satellite-embedding/demo2/landcover-classification.ipynb
+            text: "Demo 2: Land Cover Classification with K-Means Clustering (reformatted)"
 
 format:
   html:

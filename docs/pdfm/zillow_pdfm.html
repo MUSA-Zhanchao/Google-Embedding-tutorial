@@ -58,7 +58,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
@@ -102,9 +102,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
-
-<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
 
 
 </head>
@@ -134,6 +131,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="nav-link" href="../slides/slides.html">
 <span class="menu-text">Presentation</span></a>
   </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-demos" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Demos</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-demos">
+        <li>
+    <a class="dropdown-item" href="../satellite-embedding/demo2/landcover-classification.html">
+ <span class="dropdown-text">Demo 2: Land Cover Classification with K-Means Clustering (reformatted)</span></a>
+  </li>
+    </ul>
+  </li>
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -154,7 +162,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<div id="1ad64cbf" class="cell" data-execution_count="1">
+<div id="0" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
@@ -165,1311 +173,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> leafmap.common <span class="im">import</span> evaluate_model, plot_actual_vs_predicted, download_file</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="f1c6b86e" class="cell" data-execution_count="2">
+<div id="1" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>zhvi_file <span class="op">=</span> <span class="st">"/home/zyang91/Desktop/data/zillow_home_value_index_by_zipcode.csv"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="f7e17688" class="cell" data-execution_count="3">
+<div id="2" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>zhvi_df <span class="op">=</span> pd.read_csv(zhvi_file, dtype<span class="op">=</span>{<span class="st">"RegionName"</span>: <span class="bu">str</span>})</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>zhvi_df.index <span class="op">=</span> zhvi_df[<span class="st">"RegionName"</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="ss">f"zip/</span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>zhvi_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="3">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionID</th>
-<th data-quarto-table-cell-role="th">SizeRank</th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">RegionType</th>
-<th data-quarto-table-cell-role="th">StateName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">City</th>
-<th data-quarto-table-cell-role="th">Metro</th>
-<th data-quarto-table-cell-role="th">CountyName</th>
-<th data-quarto-table-cell-role="th">2000-01-31</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">2024-04-30</th>
-<th data-quarto-table-cell-role="th">2024-05-31</th>
-<th data-quarto-table-cell-role="th">2024-06-30</th>
-<th data-quarto-table-cell-role="th">2024-07-31</th>
-<th data-quarto-table-cell-role="th">2024-08-31</th>
-<th data-quarto-table-cell-role="th">2024-09-30</th>
-<th data-quarto-table-cell-role="th">2024-10-31</th>
-<th data-quarto-table-cell-role="th">2024-11-30</th>
-<th data-quarto-table-cell-role="th">2024-12-31</th>
-<th data-quarto-table-cell-role="th">2025-01-31</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/77494</td>
-<td>91982</td>
-<td>1</td>
-<td>77494</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Katy</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Fort Bend County</td>
-<td>209050.47676</td>
-<td>...</td>
-<td>493768.79581</td>
-<td>495075.41384</td>
-<td>495380.40257</td>
-<td>495002.98333</td>
-<td>495408.56194</td>
-<td>496096.30546</td>
-<td>497215.16189</td>
-<td>497931.31997</td>
-<td>498348.02484</td>
-<td>498770.07052</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/8701</td>
-<td>61148</td>
-<td>2</td>
-<td>8701</td>
-<td>zip</td>
-<td>NJ</td>
-<td>NJ</td>
-<td>Lakewood</td>
-<td>New York-Newark-Jersey City, NY-NJ-PA</td>
-<td>Ocean County</td>
-<td>129618.78060</td>
-<td>...</td>
-<td>567181.88952</td>
-<td>574111.68852</td>
-<td>579228.58585</td>
-<td>583825.79895</td>
-<td>588765.87771</td>
-<td>594583.48573</td>
-<td>599788.27507</td>
-<td>603106.03147</td>
-<td>605075.74933</td>
-<td>605701.71314</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/77449</td>
-<td>91940</td>
-<td>3</td>
-<td>77449</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Katy</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Harris County</td>
-<td>103655.52834</td>
-<td>...</td>
-<td>281613.08126</td>
-<td>282147.02210</td>
-<td>282107.28078</td>
-<td>281872.89042</td>
-<td>281691.18638</td>
-<td>281502.99185</td>
-<td>281086.41028</td>
-<td>280298.90222</td>
-<td>279570.22174</td>
-<td>278960.08768</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/11368</td>
-<td>62080</td>
-<td>4</td>
-<td>11368</td>
-<td>zip</td>
-<td>NY</td>
-<td>NY</td>
-<td>New York</td>
-<td>New York-Newark-Jersey City, NY-NJ-PA</td>
-<td>Queens County</td>
-<td>146323.41156</td>
-<td>...</td>
-<td>448237.17350</td>
-<td>452805.95427</td>
-<td>453500.45273</td>
-<td>452997.37976</td>
-<td>452371.99866</td>
-<td>453320.49579</td>
-<td>453075.34378</td>
-<td>451863.57197</td>
-<td>449627.30018</td>
-<td>447532.07593</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/77084</td>
-<td>91733</td>
-<td>5</td>
-<td>77084</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Houston</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Harris County</td>
-<td>102106.86183</td>
-<td>...</td>
-<td>274112.51755</td>
-<td>274613.19668</td>
-<td>274446.91817</td>
-<td>274155.37019</td>
-<td>273883.45917</td>
-<td>273631.25456</td>
-<td>273125.76564</td>
-<td>272528.81542</td>
-<td>272190.92108</td>
-<td>271949.29478</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/14441</td>
-<td>63527</td>
-<td>39992</td>
-<td>14441</td>
-<td>zip</td>
-<td>NY</td>
-<td>NY</td>
-<td>Dresden</td>
-<td>Rochester, NY</td>
-<td>Yates County</td>
-<td>95200.50699</td>
-<td>...</td>
-<td>207411.50108</td>
-<td>212859.34574</td>
-<td>217705.20709</td>
-<td>220747.04046</td>
-<td>223033.16078</td>
-<td>225156.69128</td>
-<td>227314.26864</td>
-<td>228544.60812</td>
-<td>228472.62049</td>
-<td>227382.44448</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/98628</td>
-<td>99927</td>
-<td>39992</td>
-<td>98628</td>
-<td>zip</td>
-<td>WA</td>
-<td>WA</td>
-<td>Klickitat</td>
-<td>NaN</td>
-<td>Klickitat County</td>
-<td>NaN</td>
-<td>...</td>
-<td>180804.48613</td>
-<td>183691.42860</td>
-<td>184378.49311</td>
-<td>182270.09823</td>
-<td>179856.66170</td>
-<td>177621.28838</td>
-<td>176436.41050</td>
-<td>175243.01948</td>
-<td>174289.08096</td>
-<td>172769.70567</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/52163</td>
-<td>80861</td>
-<td>39992</td>
-<td>52163</td>
-<td>zip</td>
-<td>IA</td>
-<td>IA</td>
-<td>Protivin</td>
-<td>NaN</td>
-<td>Howard County</td>
-<td>NaN</td>
-<td>...</td>
-<td>108590.53252</td>
-<td>110531.05868</td>
-<td>112546.78660</td>
-<td>114074.31279</td>
-<td>114923.34847</td>
-<td>114988.32175</td>
-<td>115144.24508</td>
-<td>115385.62968</td>
-<td>115883.51422</td>
-<td>116227.22666</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/82515</td>
-<td>93941</td>
-<td>39992</td>
-<td>82515</td>
-<td>zip</td>
-<td>WY</td>
-<td>WY</td>
-<td>Hudson</td>
-<td>Riverton, WY</td>
-<td>Fremont County</td>
-<td>NaN</td>
-<td>...</td>
-<td>172749.51473</td>
-<td>173795.26943</td>
-<td>174129.18080</td>
-<td>173601.28544</td>
-<td>173438.17253</td>
-<td>173265.88871</td>
-<td>173444.63429</td>
-<td>172971.96409</td>
-<td>172685.45419</td>
-<td>172487.20152</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/50160</td>
-<td>80190</td>
-<td>39992</td>
-<td>50160</td>
-<td>zip</td>
-<td>IA</td>
-<td>IA</td>
-<td>Martensdale</td>
-<td>Des Moines-West Des Moines, IA</td>
-<td>Warren County</td>
-<td>NaN</td>
-<td>...</td>
-<td>196175.58759</td>
-<td>197239.57154</td>
-<td>197434.12514</td>
-<td>197622.44778</td>
-<td>197875.01391</td>
-<td>198489.17993</td>
-<td>199001.79534</td>
-<td>199616.16038</td>
-<td>200645.25013</td>
-<td>201405.93792</td>
-</tr>
-</tbody>
-</table>
-
-<p>26323 rows × 310 columns</p>
 </div>
-</div>
-</div>
-<div id="a967c968" class="cell" data-execution_count="4">
+<div id="3" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>embeddings_file <span class="op">=</span> <span class="st">"/home/zyang91/Desktop/us/zcta_embeddings.csv"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="f153bbeb" class="cell" data-execution_count="5">
+<div id="4" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>zipcode_embeddings <span class="op">=</span> pd.read_csv(embeddings_file).set_index(<span class="st">"place"</span>)</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>zipcode_embeddings</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="5">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">state</th>
-<th data-quarto-table-cell-role="th">county</th>
-<th data-quarto-table-cell-role="th">city</th>
-<th data-quarto-table-cell-role="th">population</th>
-<th data-quarto-table-cell-role="th">latitude</th>
-<th data-quarto-table-cell-role="th">longitude</th>
-<th data-quarto-table-cell-role="th">feature0</th>
-<th data-quarto-table-cell-role="th">feature1</th>
-<th data-quarto-table-cell-role="th">feature2</th>
-<th data-quarto-table-cell-role="th">feature3</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">feature320</th>
-<th data-quarto-table-cell-role="th">feature321</th>
-<th data-quarto-table-cell-role="th">feature322</th>
-<th data-quarto-table-cell-role="th">feature323</th>
-<th data-quarto-table-cell-role="th">feature324</th>
-<th data-quarto-table-cell-role="th">feature325</th>
-<th data-quarto-table-cell-role="th">feature326</th>
-<th data-quarto-table-cell-role="th">feature327</th>
-<th data-quarto-table-cell-role="th">feature328</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-</tr>
-<tr class="even">
-<th data-quarto-table-cell-role="th">place</th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th"></th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/97910</td>
-<td>OR</td>
-<td>Malheur County</td>
-<td>Jordan Valley</td>
-<td>609</td>
-<td>42.749076</td>
-<td>-117.511459</td>
-<td>-0.138227</td>
-<td>1.120377</td>
-<td>0.072900</td>
-<td>0.297442</td>
-<td>...</td>
-<td>-1.588909e-01</td>
-<td>-0.168708</td>
-<td>1.231994</td>
-<td>-1.557645e-01</td>
-<td>3.043214</td>
-<td>-1.697491e-01</td>
-<td>0.177463</td>
-<td>-0.001661</td>
-<td>-1.010470e-03</td>
-<td>4.495589</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/89412</td>
-<td>NV</td>
-<td>Washoe County</td>
-<td>Gerlach</td>
-<td>98</td>
-<td>41.102934</td>
-<td>-119.695361</td>
-<td>-0.141379</td>
-<td>1.422782</td>
-<td>0.234269</td>
-<td>0.159156</td>
-<td>...</td>
-<td>-1.574173e-01</td>
-<td>-0.043606</td>
-<td>2.788701</td>
-<td>-6.254692e-02</td>
-<td>3.700745</td>
-<td>-1.698268e-01</td>
-<td>-0.137990</td>
-<td>-0.024385</td>
-<td>-2.950600e-04</td>
-<td>3.399393</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/88030</td>
-<td>NM</td>
-<td>Luna County</td>
-<td>Deming</td>
-<td>24139</td>
-<td>32.191634</td>
-<td>-107.729431</td>
-<td>-0.046666</td>
-<td>1.414424</td>
-<td>0.146803</td>
-<td>1.113256</td>
-<td>...</td>
-<td>-6.540800e-04</td>
-<td>0.437475</td>
-<td>4.229295</td>
-<td>2.291990e-01</td>
-<td>2.098469</td>
-<td>1.150497e+00</td>
-<td>0.716122</td>
-<td>-0.116499</td>
-<td>-5.116325e-02</td>
-<td>3.866543</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/82633</td>
-<td>WY</td>
-<td>Converse County</td>
-<td>Douglas</td>
-<td>9478</td>
-<td>43.022270</td>
-<td>-105.410250</td>
-<td>-0.090293</td>
-<td>1.266280</td>
-<td>0.447868</td>
-<td>0.781861</td>
-<td>...</td>
-<td>-3.377113e-02</td>
-<td>0.579775</td>
-<td>2.688665</td>
-<td>1.756692e-01</td>
-<td>0.990921</td>
-<td>1.644879e+00</td>
-<td>0.222517</td>
-<td>-0.047864</td>
-<td>-4.237000e-05</td>
-<td>7.453567</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/59538</td>
-<td>MT</td>
-<td>Phillips County</td>
-<td>Malta</td>
-<td>2936</td>
-<td>48.112019</td>
-<td>-107.845520</td>
-<td>-0.092886</td>
-<td>1.256203</td>
-<td>-0.050897</td>
-<td>0.321954</td>
-<td>...</td>
-<td>-1.699154e-01</td>
-<td>-0.088829</td>
-<td>0.338914</td>
-<td>-1.029619e-01</td>
-<td>-0.156583</td>
-<td>1.493696e+00</td>
-<td>2.259007</td>
-<td>-0.161916</td>
-<td>-1.086910e-03</td>
-<td>0.972243</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/43117</td>
-<td>OH</td>
-<td>Pickaway County</td>
-<td>Derby</td>
-<td>69</td>
-<td>39.768789</td>
-<td>-83.206122</td>
-<td>-0.027339</td>
-<td>1.556422</td>
-<td>1.229264</td>
-<td>0.801588</td>
-<td>...</td>
-<td>-1.090080e-01</td>
-<td>-0.039277</td>
-<td>1.950797</td>
-<td>-1.548614e-01</td>
-<td>-0.163302</td>
-<td>-1.699533e-01</td>
-<td>1.940206</td>
-<td>1.456303</td>
-<td>-9.436400e-04</td>
-<td>2.706647</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/14302</td>
-<td>NY</td>
-<td>Niagara County</td>
-<td>Niagara Falls</td>
-<td>229</td>
-<td>43.093896</td>
-<td>-79.049193</td>
-<td>-0.081384</td>
-<td>1.241892</td>
-<td>0.655743</td>
-<td>0.431606</td>
-<td>...</td>
-<td>8.140615e-01</td>
-<td>-0.000713</td>
-<td>-0.117548</td>
-<td>-7.834878e-02</td>
-<td>1.176950</td>
-<td>-1.900440e-02</td>
-<td>0.445953</td>
-<td>-0.071082</td>
-<td>-3.293640e-03</td>
-<td>1.193913</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/10162</td>
-<td>NY</td>
-<td>New York County</td>
-<td>New York</td>
-<td>2268</td>
-<td>40.769298</td>
-<td>-73.949942</td>
-<td>-0.130655</td>
-<td>1.159695</td>
-<td>3.368129</td>
-<td>1.547286</td>
-<td>...</td>
-<td>-9.400000e-07</td>
-<td>-0.130648</td>
-<td>-0.000000</td>
-<td>-3.996429e-02</td>
-<td>-0.023050</td>
-<td>-2.800000e-07</td>
-<td>0.033541</td>
-<td>-0.000002</td>
-<td>-2.000000e-08</td>
-<td>-0.097251</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/80290</td>
-<td>CO</td>
-<td>Denver County</td>
-<td>Denver</td>
-<td>281</td>
-<td>39.744092</td>
-<td>-104.986754</td>
-<td>-0.112998</td>
-<td>0.355581</td>
-<td>3.924113</td>
-<td>3.203672</td>
-<td>...</td>
-<td>-5.011000e-05</td>
-<td>0.050413</td>
-<td>2.452633</td>
-<td>2.943200e+00</td>
-<td>0.056537</td>
-<td>1.590900e+00</td>
-<td>3.215226</td>
-<td>-0.002824</td>
-<td>-5.924400e-04</td>
-<td>4.557303</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/10279</td>
-<td>NY</td>
-<td>New York County</td>
-<td>New York</td>
-<td>131</td>
-<td>40.712626</td>
-<td>-74.008669</td>
-<td>-0.130601</td>
-<td>0.820977</td>
-<td>3.554522</td>
-<td>1.780694</td>
-<td>...</td>
-<td>-0.000000e+00</td>
-<td>-0.000002</td>
-<td>-0.000000</td>
-<td>-2.100000e-07</td>
-<td>-0.000002</td>
-<td>-0.000000e+00</td>
-<td>-0.016128</td>
-<td>-0.000000</td>
-<td>-1.000000e-08</td>
-<td>-0.000792</td>
-</tr>
-</tbody>
-</table>
-
-<p>32069 rows × 336 columns</p>
 </div>
-</div>
-</div>
-<div id="b4b823df" class="cell" data-execution_count="11">
+<div id="5" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> zhvi_df.join(zipcode_embeddings, how<span class="op">=</span><span class="st">"inner"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="11">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionID</th>
-<th data-quarto-table-cell-role="th">SizeRank</th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">RegionType</th>
-<th data-quarto-table-cell-role="th">StateName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">City</th>
-<th data-quarto-table-cell-role="th">Metro</th>
-<th data-quarto-table-cell-role="th">CountyName</th>
-<th data-quarto-table-cell-role="th">2000-01-31</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">feature320</th>
-<th data-quarto-table-cell-role="th">feature321</th>
-<th data-quarto-table-cell-role="th">feature322</th>
-<th data-quarto-table-cell-role="th">feature323</th>
-<th data-quarto-table-cell-role="th">feature324</th>
-<th data-quarto-table-cell-role="th">feature325</th>
-<th data-quarto-table-cell-role="th">feature326</th>
-<th data-quarto-table-cell-role="th">feature327</th>
-<th data-quarto-table-cell-role="th">feature328</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/77494</td>
-<td>91982</td>
-<td>1</td>
-<td>77494</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Katy</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Fort Bend County</td>
-<td>209050.47676</td>
-<td>...</td>
-<td>-0.000001</td>
-<td>-0.000573</td>
-<td>-7.384640e-02</td>
-<td>3.741291</td>
-<td>6.835684</td>
-<td>7.062005e+00</td>
-<td>2.521905</td>
-<td>1.494393</td>
-<td>-0.000000e+00</td>
-<td>0.663955</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/77449</td>
-<td>91940</td>
-<td>3</td>
-<td>77449</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Katy</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Harris County</td>
-<td>103655.52834</td>
-<td>...</td>
-<td>-0.017497</td>
-<td>-0.003990</td>
-<td>-1.646668e-01</td>
-<td>4.616399</td>
-<td>6.331781</td>
-<td>6.382573e+00</td>
-<td>2.943955</td>
-<td>1.990187</td>
-<td>-4.000000e-06</td>
-<td>1.199221</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/11368</td>
-<td>62080</td>
-<td>4</td>
-<td>11368</td>
-<td>zip</td>
-<td>NY</td>
-<td>NY</td>
-<td>New York</td>
-<td>New York-Newark-Jersey City, NY-NJ-PA</td>
-<td>Queens County</td>
-<td>146323.41156</td>
-<td>...</td>
-<td>-0.099274</td>
-<td>2.189546</td>
-<td>-2.500000e-07</td>
-<td>6.165315</td>
-<td>-0.082513</td>
-<td>-1.300000e-07</td>
-<td>3.876507</td>
-<td>-0.031210</td>
-<td>-4.438200e-04</td>
-<td>3.084769</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/77084</td>
-<td>91733</td>
-<td>5</td>
-<td>77084</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Houston</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Harris County</td>
-<td>102106.86183</td>
-<td>...</td>
-<td>-0.006604</td>
-<td>-0.015875</td>
-<td>-1.620866e-01</td>
-<td>4.832126</td>
-<td>6.007081</td>
-<td>6.243350e+00</td>
-<td>1.670585</td>
-<td>2.623777</td>
-<td>-7.000000e-08</td>
-<td>0.925346</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/79936</td>
-<td>93144</td>
-<td>6</td>
-<td>79936</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>El Paso</td>
-<td>El Paso, TX</td>
-<td>El Paso County</td>
-<td>88633.20026</td>
-<td>...</td>
-<td>2.817620</td>
-<td>3.308279</td>
-<td>1.424846e+00</td>
-<td>5.052125</td>
-<td>-0.169852</td>
-<td>-1.595640e-03</td>
-<td>0.101079</td>
-<td>-0.168736</td>
-<td>-4.000000e-08</td>
-<td>11.867829</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/14441</td>
-<td>63527</td>
-<td>39992</td>
-<td>14441</td>
-<td>zip</td>
-<td>NY</td>
-<td>NY</td>
-<td>Dresden</td>
-<td>Rochester, NY</td>
-<td>Yates County</td>
-<td>95200.50699</td>
-<td>...</td>
-<td>4.180083</td>
-<td>-0.131965</td>
-<td>1.830823e+00</td>
-<td>0.323147</td>
-<td>0.010833</td>
-<td>-9.629160e-03</td>
-<td>1.642928</td>
-<td>0.619273</td>
-<td>-1.592139e-02</td>
-<td>0.255313</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/98628</td>
-<td>99927</td>
-<td>39992</td>
-<td>98628</td>
-<td>zip</td>
-<td>WA</td>
-<td>WA</td>
-<td>Klickitat</td>
-<td>NaN</td>
-<td>Klickitat County</td>
-<td>NaN</td>
-<td>...</td>
-<td>-0.167128</td>
-<td>0.219471</td>
-<td>-1.258920e-03</td>
-<td>-0.017126</td>
-<td>4.365533</td>
-<td>4.186756e-01</td>
-<td>0.186192</td>
-<td>-0.163884</td>
-<td>-7.537420e-03</td>
-<td>1.982381</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/52163</td>
-<td>80861</td>
-<td>39992</td>
-<td>52163</td>
-<td>zip</td>
-<td>IA</td>
-<td>IA</td>
-<td>Protivin</td>
-<td>NaN</td>
-<td>Howard County</td>
-<td>NaN</td>
-<td>...</td>
-<td>-0.160310</td>
-<td>0.264810</td>
-<td>-1.492518e-01</td>
-<td>-0.099826</td>
-<td>0.856826</td>
-<td>-2.017140e-02</td>
-<td>9.899288</td>
-<td>-0.132805</td>
-<td>-2.782500e-04</td>
-<td>0.601016</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/82515</td>
-<td>93941</td>
-<td>39992</td>
-<td>82515</td>
-<td>zip</td>
-<td>WY</td>
-<td>WY</td>
-<td>Hudson</td>
-<td>Riverton, WY</td>
-<td>Fremont County</td>
-<td>NaN</td>
-<td>...</td>
-<td>0.308261</td>
-<td>0.603739</td>
-<td>3.155533e+00</td>
-<td>-0.080326</td>
-<td>1.294188</td>
-<td>8.093709e-01</td>
-<td>-0.147521</td>
-<td>-0.047723</td>
-<td>-1.597920e-03</td>
-<td>6.474327</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/50160</td>
-<td>80190</td>
-<td>39992</td>
-<td>50160</td>
-<td>zip</td>
-<td>IA</td>
-<td>IA</td>
-<td>Martensdale</td>
-<td>Des Moines-West Des Moines, IA</td>
-<td>Warren County</td>
-<td>NaN</td>
-<td>...</td>
-<td>-0.162361</td>
-<td>-0.149574</td>
-<td>1.953593e+00</td>
-<td>-0.001024</td>
-<td>1.201412</td>
-<td>-1.557630e-03</td>
-<td>2.875653</td>
-<td>-0.168282</td>
-<td>-4.259114e-02</td>
-<td>0.575394</td>
-</tr>
-</tbody>
-</table>
-
-<p>24003 rows × 646 columns</p>
 </div>
-</div>
-</div>
-<div id="e08b2710" class="cell" data-execution_count="12">
+<div id="6" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>embedding_features <span class="op">=</span> [<span class="ss">f"feature</span><span class="sc">{</span>x<span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">330</span>)]</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>label <span class="op">=</span> <span class="st">"2024-10-31"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="e61dbceb" class="cell" data-execution_count="13">
+<div id="7" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data.dropna(subset<span class="op">=</span>[label])</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="13">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">RegionID</th>
-<th data-quarto-table-cell-role="th">SizeRank</th>
-<th data-quarto-table-cell-role="th">RegionName</th>
-<th data-quarto-table-cell-role="th">RegionType</th>
-<th data-quarto-table-cell-role="th">StateName</th>
-<th data-quarto-table-cell-role="th">State</th>
-<th data-quarto-table-cell-role="th">City</th>
-<th data-quarto-table-cell-role="th">Metro</th>
-<th data-quarto-table-cell-role="th">CountyName</th>
-<th data-quarto-table-cell-role="th">2000-01-31</th>
-<th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">feature320</th>
-<th data-quarto-table-cell-role="th">feature321</th>
-<th data-quarto-table-cell-role="th">feature322</th>
-<th data-quarto-table-cell-role="th">feature323</th>
-<th data-quarto-table-cell-role="th">feature324</th>
-<th data-quarto-table-cell-role="th">feature325</th>
-<th data-quarto-table-cell-role="th">feature326</th>
-<th data-quarto-table-cell-role="th">feature327</th>
-<th data-quarto-table-cell-role="th">feature328</th>
-<th data-quarto-table-cell-role="th">feature329</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/77494</td>
-<td>91982</td>
-<td>1</td>
-<td>77494</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Katy</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Fort Bend County</td>
-<td>209050.47676</td>
-<td>...</td>
-<td>-0.000001</td>
-<td>-0.000573</td>
-<td>-7.384640e-02</td>
-<td>3.741291</td>
-<td>6.835684</td>
-<td>7.062005e+00</td>
-<td>2.521905</td>
-<td>1.494393</td>
-<td>-0.000000e+00</td>
-<td>0.663955</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/77449</td>
-<td>91940</td>
-<td>3</td>
-<td>77449</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Katy</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Harris County</td>
-<td>103655.52834</td>
-<td>...</td>
-<td>-0.017497</td>
-<td>-0.003990</td>
-<td>-1.646668e-01</td>
-<td>4.616399</td>
-<td>6.331781</td>
-<td>6.382573e+00</td>
-<td>2.943955</td>
-<td>1.990187</td>
-<td>-4.000000e-06</td>
-<td>1.199221</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/11368</td>
-<td>62080</td>
-<td>4</td>
-<td>11368</td>
-<td>zip</td>
-<td>NY</td>
-<td>NY</td>
-<td>New York</td>
-<td>New York-Newark-Jersey City, NY-NJ-PA</td>
-<td>Queens County</td>
-<td>146323.41156</td>
-<td>...</td>
-<td>-0.099274</td>
-<td>2.189546</td>
-<td>-2.500000e-07</td>
-<td>6.165315</td>
-<td>-0.082513</td>
-<td>-1.300000e-07</td>
-<td>3.876507</td>
-<td>-0.031210</td>
-<td>-4.438200e-04</td>
-<td>3.084769</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/77084</td>
-<td>91733</td>
-<td>5</td>
-<td>77084</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>Houston</td>
-<td>Houston-The Woodlands-Sugar Land, TX</td>
-<td>Harris County</td>
-<td>102106.86183</td>
-<td>...</td>
-<td>-0.006604</td>
-<td>-0.015875</td>
-<td>-1.620866e-01</td>
-<td>4.832126</td>
-<td>6.007081</td>
-<td>6.243350e+00</td>
-<td>1.670585</td>
-<td>2.623777</td>
-<td>-7.000000e-08</td>
-<td>0.925346</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/79936</td>
-<td>93144</td>
-<td>6</td>
-<td>79936</td>
-<td>zip</td>
-<td>TX</td>
-<td>TX</td>
-<td>El Paso</td>
-<td>El Paso, TX</td>
-<td>El Paso County</td>
-<td>88633.20026</td>
-<td>...</td>
-<td>2.817620</td>
-<td>3.308279</td>
-<td>1.424846e+00</td>
-<td>5.052125</td>
-<td>-0.169852</td>
-<td>-1.595640e-03</td>
-<td>0.101079</td>
-<td>-0.168736</td>
-<td>-4.000000e-08</td>
-<td>11.867829</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/14441</td>
-<td>63527</td>
-<td>39992</td>
-<td>14441</td>
-<td>zip</td>
-<td>NY</td>
-<td>NY</td>
-<td>Dresden</td>
-<td>Rochester, NY</td>
-<td>Yates County</td>
-<td>95200.50699</td>
-<td>...</td>
-<td>4.180083</td>
-<td>-0.131965</td>
-<td>1.830823e+00</td>
-<td>0.323147</td>
-<td>0.010833</td>
-<td>-9.629160e-03</td>
-<td>1.642928</td>
-<td>0.619273</td>
-<td>-1.592139e-02</td>
-<td>0.255313</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/98628</td>
-<td>99927</td>
-<td>39992</td>
-<td>98628</td>
-<td>zip</td>
-<td>WA</td>
-<td>WA</td>
-<td>Klickitat</td>
-<td>NaN</td>
-<td>Klickitat County</td>
-<td>NaN</td>
-<td>...</td>
-<td>-0.167128</td>
-<td>0.219471</td>
-<td>-1.258920e-03</td>
-<td>-0.017126</td>
-<td>4.365533</td>
-<td>4.186756e-01</td>
-<td>0.186192</td>
-<td>-0.163884</td>
-<td>-7.537420e-03</td>
-<td>1.982381</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/52163</td>
-<td>80861</td>
-<td>39992</td>
-<td>52163</td>
-<td>zip</td>
-<td>IA</td>
-<td>IA</td>
-<td>Protivin</td>
-<td>NaN</td>
-<td>Howard County</td>
-<td>NaN</td>
-<td>...</td>
-<td>-0.160310</td>
-<td>0.264810</td>
-<td>-1.492518e-01</td>
-<td>-0.099826</td>
-<td>0.856826</td>
-<td>-2.017140e-02</td>
-<td>9.899288</td>
-<td>-0.132805</td>
-<td>-2.782500e-04</td>
-<td>0.601016</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/82515</td>
-<td>93941</td>
-<td>39992</td>
-<td>82515</td>
-<td>zip</td>
-<td>WY</td>
-<td>WY</td>
-<td>Hudson</td>
-<td>Riverton, WY</td>
-<td>Fremont County</td>
-<td>NaN</td>
-<td>...</td>
-<td>0.308261</td>
-<td>0.603739</td>
-<td>3.155533e+00</td>
-<td>-0.080326</td>
-<td>1.294188</td>
-<td>8.093709e-01</td>
-<td>-0.147521</td>
-<td>-0.047723</td>
-<td>-1.597920e-03</td>
-<td>6.474327</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/50160</td>
-<td>80190</td>
-<td>39992</td>
-<td>50160</td>
-<td>zip</td>
-<td>IA</td>
-<td>IA</td>
-<td>Martensdale</td>
-<td>Des Moines-West Des Moines, IA</td>
-<td>Warren County</td>
-<td>NaN</td>
-<td>...</td>
-<td>-0.162361</td>
-<td>-0.149574</td>
-<td>1.953593e+00</td>
-<td>-0.001024</td>
-<td>1.201412</td>
-<td>-1.557630e-03</td>
-<td>2.875653</td>
-<td>-0.168282</td>
-<td>-4.259114e-02</td>
-<td>0.575394</td>
-</tr>
-</tbody>
-</table>
-
-<p>24002 rows × 646 columns</p>
 </div>
-</div>
-</div>
-<div id="b6f1393b" class="cell" data-execution_count="14">
+<div id="8" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> data[embedding_features <span class="op">+</span> [label]]</span>
@@ -1481,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="0ecda9f2" class="cell" data-execution_count="15">
+<div id="9" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize and train a simple linear regression model</span></span>
@@ -1492,146 +244,85 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> model.predict(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="8d262ee9" class="cell" data-execution_count="16">
+<div id="10" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>evaluation_df <span class="op">=</span> pd.DataFrame({<span class="st">"y"</span>: y_test, <span class="st">"y_pred"</span>: y_pred})</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> evaluate_model(evaluation_df)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'r2': 0.7923863392335829, 'r': np.float64(0.890846915263462), 'rmse': 131888.38743343446, 'mae': 72573.83922121955, 'mape': 0.26673190601469865}</code></pre>
 </div>
-</div>
-<div id="41dfdc78" class="cell" data-execution_count="17">
+<div id="11" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>xy_lim <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">3_000_000</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    evaluation_df,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Actual vs Predicted Home Values"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual Home Value"</span>,</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted Home Value"</span>,</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>xy_lim <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">3_000_000</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    evaluation_df,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Actual vs Predicted Home Values"</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual Home Value"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted Home Value"</span>,</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<pre><code>Unable to display output for mime type(s): application/vnd.plotly.v1+json</code></pre>
 </div>
-</div>
-<div id="0994d77d" class="cell" data-execution_count="18">
+<div id="12" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>evaluate_df <span class="op">=</span> pd.DataFrame({<span class="st">"y"</span>: y_test, <span class="st">"y_pred"</span>: y_pred})</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> evaluate_model(evaluate_df)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>evaluate_df <span class="op">=</span> pd.DataFrame({<span class="st">"y"</span>: y_test, <span class="st">"y_pred"</span>: y_pred})</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> evaluate_model(evaluate_df)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'r2': 0.7923863392335829, 'r': np.float64(0.890846915263462), 'rmse': 131888.38743343446, 'mae': 72573.83922121955, 'mape': 0.26673190601469865}</code></pre>
 </div>
-</div>
-<div id="97c06ccc" class="cell" data-execution_count="19">
+<div id="13" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>evaluate_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>evaluate_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="19">
-<div>
-
-
-<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">y</th>
-<th data-quarto-table-cell-role="th">y_pred</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/62943</td>
-<td>162222.55793</td>
-<td>204549.127895</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/63653</td>
-<td>72232.23067</td>
-<td>23479.718488</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/64117</td>
-<td>199195.44126</td>
-<td>156224.812811</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">zip/74931</td>
-<td>150131.29134</td>
-<td>243551.452823</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">zip/98168</td>
-<td>558843.92154</td>
-<td>494979.367988</td>
-</tr>
-</tbody>
-</table>
-
 </div>
-</div>
-</div>
-<div id="b995e37f" class="cell" data-execution_count="20">
+<div id="14" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>xy_lim <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">3000000</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    evaluate_df,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual"</span>,</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted"</span>,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Actual vs Predicted ZHVI"</span>,</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>xy_lim <span class="op">=</span> (<span class="dv">0</span>, <span class="dv">3000000</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    evaluate_df,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="st">"Actual vs Predicted ZHVI"</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<pre><code>Unable to display output for mime type(s): application/vnd.plotly.v1+json</code></pre>
 </div>
-</div>
-<div id="8c4025ab" class="cell" data-execution_count="22">
+<div id="15" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">5</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>knn_model <span class="op">=</span> KNeighborsRegressor(n_neighbors<span class="op">=</span>k)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>knn_model.fit(X_train, y_train)</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> knn_model.predict(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>k <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>knn_model <span class="op">=</span> KNeighborsRegressor(n_neighbors<span class="op">=</span>k)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>knn_model.fit(X_train, y_train)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> knn_model.predict(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="a21b757e" class="cell" data-execution_count="23">
+<div id="16" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    evaluate_df,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual"</span>,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted"</span>,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="ss">f"Actual vs Predicted ZHVI (KNN, k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">)"</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plot_actual_vs_predicted(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    evaluate_df,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    x_label<span class="op">=</span><span class="st">"Actual"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    y_label<span class="op">=</span><span class="st">"Predicted"</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    xlim<span class="op">=</span>xy_lim,</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    ylim<span class="op">=</span>xy_lim,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    title<span class="op">=</span><span class="ss">f"Actual vs Predicted ZHVI (KNN, k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">)"</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<pre><code>Unable to display output for mime type(s): application/vnd.plotly.v1+json</code></pre>
 </div>
-</div>
-<div id="967ac2f1" class="cell" data-execution_count="24">
+<div id="17" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>evaluation_df <span class="op">=</span> pd.DataFrame({<span class="st">"y"</span>: y_test, <span class="st">"y_pred"</span>: y_pred})</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> evaluate_model(evaluation_df)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>evaluation_df <span class="op">=</span> pd.DataFrame({<span class="st">"y"</span>: y_test, <span class="st">"y_pred"</span>: y_pred})</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> evaluate_model(evaluation_df)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'r2': 0.787670314194312, 'r': np.float64(0.8889091262880304), 'rmse': 133377.92408499756, 'mae': 60408.591463699224, 'mape': 0.2067017807110204}</code></pre>
-</div>
 </div>
 
 
