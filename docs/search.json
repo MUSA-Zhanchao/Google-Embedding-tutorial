@@ -95,7 +95,7 @@
     "href": "slides/slides.html#blackbox-nature-of-embeddings",
     "title": "Satellite and Population Embedding",
     "section": "Blackbox Nature of Embeddings",
-    "text": "Blackbox Nature of Embeddings\n\n\nGenerated through various neural network models (GNN or CNN) trained on a large datasets.\nExact architecture and training process vary widely.\nThe company or research institutions may not disclose the full details of their models."
+    "text": "Blackbox Nature of Embeddings\n\n\n\nGenerated through various neural network models (GNN or CNN) trained on a large datasets.\nExact architecture and training process vary widely.\nThe company or research institutions may not disclose the full details of their models."
   },
   {
     "objectID": "slides/slides.html#population-dynamics-foundation-pdfm-embeddings",
@@ -116,14 +116,14 @@
     "href": "slides/slides.html#applications-of-pdfm-embeddings",
     "title": "Satellite and Population Embedding",
     "section": "Applications of PDFM Embeddings",
-    "text": "Applications of PDFM Embeddings\nHealth & Social Services:\n\nDisease prevalence prediction\nHealthcare resource allocation\n\nEconomic Analysis:\n\nSocioeconomic indicators modeling\nIncome and poverty estimation\n\nUrban Planning:\n\nPopulation growth forecasting\nPOI and hotspot prediction"
+    "text": "Applications of PDFM Embeddings\n\n\nHealth & Social Services:\n\nDisease prevalence prediction\nHealthcare resource allocation\n\nEconomic Analysis:\n\nSocioeconomic indicators modeling\nIncome and poverty estimation\n\nUrban Planning:\n\nPopulation growth forecasting\nPOI and hotspot prediction"
   },
   {
     "objectID": "slides/slides.html#demo-1-using-pdfm-embeddings-to-predict-housing-prices",
     "href": "slides/slides.html#demo-1-using-pdfm-embeddings-to-predict-housing-prices",
     "title": "Satellite and Population Embedding",
     "section": "Demo 1: Using PDFM Embeddings to predict housing prices",
-    "text": "Demo 1: Using PDFM Embeddings to predict housing prices\nDataset:\n\nZillow Home Value Index (ZHVI) by ZIP code\nPDFM embeddings (330 features)\n\nModel:\n\nLinear Regression (Stepwise regression)\nData mining approaches\nOutput: Predicted home prices"
+    "text": "Demo 1: Using PDFM Embeddings to predict housing prices\nDataset:\n\nZillow Home Value Index (ZHVI) by ZIP code\nPDFM embeddings (326 features)\n\nModel:\n\nLinear Regression (Stepwise regression)\nData mining approaches\nOutput: Predicted home prices"
   },
   {
     "objectID": "slides/slides.html#satellite-foundation-model-sfm-embeddings",
@@ -144,7 +144,7 @@
     "href": "slides/slides.html#satellite-embeddings-with-google-earth-engine-gee",
     "title": "Satellite and Population Embedding",
     "section": "Satellite Embeddings with Google Earth Engine (GEE)",
-    "text": "Satellite Embeddings with Google Earth Engine (GEE)\nDataset:\n\nGOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\n65 bands\n\nKey Operations:\n\nFilter by date and location\nExtract embeddings for points/regions\nCompare temporal changes\nCalculate similarity (dot product)"
+    "text": "Satellite Embeddings with Google Earth Engine (GEE)\nDataset:\n\nGOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\n70 bands\n\nKey Operations:\n\nFilter by date and location\nExtract embeddings for points/regions\nCompare temporal changes\nCalculate similarity (dot product)"
   },
   {
     "objectID": "slides/slides.html#applications-of-sfm-embeddings",
@@ -264,5 +264,26 @@
     "title": "Unsupervised Classification with Satellite Embedding Dataset",
     "section": "9 References and acknowledgements",
     "text": "9 References and acknowledgements\n\nGoogle Earth Engine Satellite Embedding Tutorial by Ujaval Gandhi via official Google Earth Engine embedding tutorial: https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-02-unsupervised-classification\nLeafmap package by Dr. Qiusheng Wu: https://leafmap.org/\ngeemap package by Dr. Qiusheng Wu: https://geemap.org/\nDr. Qiusheng Wu Google Satellite Embedding tutorial: https://www.youtube.com/watch?v=EGL7fXyA7-U\n\nThank you so much to Ujaval Gandhi and Dr. Qiusheng Wu for their amazing tutorials and open-source codes!"
+  },
+  {
+    "objectID": "slides/slides.html#what-satellite-embeddings-capture",
+    "href": "slides/slides.html#what-satellite-embeddings-capture",
+    "title": "Satellite and Population Embedding",
+    "section": "What Satellite Embeddings Capture?",
+    "text": "What Satellite Embeddings Capture?\n\nLand cover patterns\nVegetation characteristics\nUrban development\nEnvironmental changes\nTemporal dynamics\n\nTrained on massive satellite imagery corpus using self-supervised learning"
+  },
+  {
+    "objectID": "slides/slides.html#population-dynamics-foundation-pdfm",
+    "href": "slides/slides.html#population-dynamics-foundation-pdfm",
+    "title": "Satellite and Population Embedding",
+    "section": "Population Dynamics Foundation (PDFM)",
+    "text": "Population Dynamics Foundation (PDFM)\n\n\n\nDeveloped by Google Research (Google Deep Mind) in 2024.\nInput:\n\nCensus data\nSearching Trends\nOther geospatial data\n\nOutput:\n\nMulti-dimensional vectors (represent population characteristics and dynamics)."
+  },
+  {
+    "objectID": "slides/slides.html#additional-applications",
+    "href": "slides/slides.html#additional-applications",
+    "title": "Satellite and Population Embedding",
+    "section": "Additional Applications",
+    "text": "Additional Applications"
   }
 ]

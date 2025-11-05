@@ -46,13 +46,19 @@ editor: visual
 
 ## Blackbox Nature of Embeddings
 
-<br>
-
--   Generated through various neural network models (GNN or CNN) trained on a large datasets.
+:::::: columns
+::: {.column width="50%"}
+-   Generated through various neural network models (**GNN or CNN**) trained on a large datasets.
 -   Exact architecture and training process vary widely.
--   The company or research institutions may not disclose the full details of their models.
+-   The company or research institutions may **not disclose the full details of their models**.
+:::
 
-## Population Dynamics Foundation (PDFM) Embeddings
+::: {.column width="50%"}
+![](images/pdfm5.png){top="0" width="700" height="450"} 
+:::
+::::::
+
+## Population Dynamics Foundation (PDFM)
 
 :::::: columns
 ::: {.column width="50%"}
@@ -65,12 +71,9 @@ editor: visual
     -   Multi-dimensional vectors (represent population characteristics and dynamics).
 :::
 
-::: {.column width="3%"}
-:::
 
-::: {.column width="47%"}
-![](images/PDFM1.jpg){top="100" width="600" height="400"}
-
+::: {.column width="50%"}
+![](images/pdfm1.jpg){top="0" width="700" height="450"} 
 :::
 ::::::
 
@@ -87,16 +90,16 @@ editor: visual
     -   Environmental conditions
 :::
 
-::: {.column width="3%"}
-:::
 
-::: {.column width="47%"}
+::: {.column width="50%"}
 ![](images/PDFM2.jpg)
 :::
 ::::::
 
 ## Applications of PDFM Embeddings
 
+:::::: columns
+::: {.column width="50%"}
 **Health & Social Services:**
 
 -   Disease prevalence prediction
@@ -111,13 +114,23 @@ editor: visual
 
 -   Population growth forecasting
 -   POI and hotspot prediction
+:::
+
+::: {.column width="50%"}
+
+![](images/pdfm4.png)
+:::
+::::::
+
+## Additional Applications
+![](images/pdfm3.png){top="0" width="900" height="550"}
 
 ## Demo 1: Using PDFM Embeddings to predict housing prices
 
 **Dataset:**
 
 -   Zillow Home Value Index (ZHVI) by ZIP code
--   PDFM embeddings (330 features)
+-   PDFM embeddings (326 features)
 
 **Model:**
 
@@ -133,7 +146,7 @@ editor: visual
 -   Spatial resolution: 10 meters
 -   Available through Google Earth Engine
 
-## What they capture
+## What Satellite Embeddings Capture?
 
 -   Land cover patterns
 -   Vegetation characteristics
@@ -148,7 +161,7 @@ editor: visual
 **Dataset:**
 
 -   `GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL`
--   65 bands
+-   70 bands
 
 **Key Operations:**
 

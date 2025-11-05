@@ -25,7 +25,7 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
   </style>
@@ -59,12 +59,12 @@
     }
     .reveal .footnotes ol {
       counter-reset: ol;
-      list-style-type: none;
+      list-style-type: none; 
       margin-left: 0;
     }
     .reveal .footnotes ol li:before {
       counter-increment: ol;
-      content: counter(ol) ". ";
+      content: counter(ol) ". "; 
     }
     .reveal .footnotes ol li > p:first-child {
       display: inline-block;
@@ -106,19 +106,19 @@
     .reveal .slide > img.r-stretch.quarto-figure-center {
       display: block;
       margin-left: auto;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-left,
     .reveal .slide > img.r-stretch.quarto-figure-left  {
       display: block;
       margin-left: 0;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-right,
     .reveal .slide > img.r-stretch.quarto-figure-right  {
       display: block;
       margin-left: auto;
-      margin-right: 0;
+      margin-right: 0; 
     }
   </style>
 </head>
@@ -133,7 +133,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Zhanchao Yang
+Zhanchao Yang 
 </div>
 <div class="quarto-title-author-email">
 <a href="mailto:zhanchao@upenn.edu">zhanchao@upenn.edu</a>
@@ -169,15 +169,19 @@ Zhanchao Yang
 </section>
 <section id="blackbox-nature-of-embeddings" class="slide level2">
 <h2>Blackbox Nature of Embeddings</h2>
-<p><br></p>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
-<li>Generated through various neural network models (GNN or CNN) trained on a large datasets.</li>
+<li>Generated through various neural network models (<strong>GNN or CNN</strong>) trained on a large datasets.</li>
 <li>Exact architecture and training process vary widely.</li>
-<li>The company or research institutions may not disclose the full details of their models.</li>
+<li>The company or research institutions may <strong>not disclose the full details of their models</strong>.</li>
 </ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="images/pdfm5.png" data-top="0" width="700" height="450"></p>
+</div></div>
 </section>
-<section id="population-dynamics-foundation-pdfm-embeddings" class="slide level2">
-<h2>Population Dynamics Foundation (PDFM) Embeddings</h2>
+<section id="population-dynamics-foundation-pdfm" class="slide level2">
+<h2>Population Dynamics Foundation (PDFM)</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <ul>
@@ -193,10 +197,8 @@ Zhanchao Yang
 <li>Multi-dimensional vectors (represent population characteristics and dynamics).</li>
 </ul></li>
 </ul>
-</div><div class="column" style="width:3%;">
-
-</div><div class="column" style="width:47%;">
-<p><img data-src="images/PDFM1.jpg" data-top="100" width="600" height="400"></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="images/pdfm1.jpg" data-top="0" width="700" height="450"></p>
 </div></div>
 </section>
 <section id="how-pdfm-embeddings-look-like" class="slide level2">
@@ -214,14 +216,14 @@ Zhanchao Yang
 <li>Environmental conditions</li>
 </ul></li>
 </ul>
-</div><div class="column" style="width:3%;">
-
-</div><div class="column" style="width:47%;">
+</div><div class="column" style="width:50%;">
 <p><img data-src="images/PDFM2.jpg"></p>
 </div></div>
 </section>
 <section id="applications-of-pdfm-embeddings" class="slide level2">
 <h2>Applications of PDFM Embeddings</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <p><strong>Health &amp; Social Services:</strong></p>
 <ul>
 <li>Disease prevalence prediction</li>
@@ -237,13 +239,20 @@ Zhanchao Yang
 <li>Population growth forecasting</li>
 <li>POI and hotspot prediction</li>
 </ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="images/pdfm4.png"></p>
+</div></div>
+</section>
+<section id="additional-applications" class="slide level2">
+<h2>Additional Applications</h2>
+<p><img data-src="images/pdfm3.png" data-top="0" width="900" height="550"></p>
 </section>
 <section id="demo-1-using-pdfm-embeddings-to-predict-housing-prices" class="slide level2">
 <h2>Demo 1: Using PDFM Embeddings to predict housing prices</h2>
 <p><strong>Dataset:</strong></p>
 <ul>
 <li>Zillow Home Value Index (ZHVI) by ZIP code</li>
-<li>PDFM embeddings (330 features)</li>
+<li>PDFM embeddings (326 features)</li>
 </ul>
 <p><strong>Model:</strong></p>
 <ul>
@@ -262,8 +271,8 @@ Zhanchao Yang
 <li>Available through Google Earth Engine</li>
 </ul>
 </section>
-<section id="what-they-capture" class="slide level2">
-<h2>What they capture</h2>
+<section id="what-satellite-embeddings-capture" class="slide level2">
+<h2>What Satellite Embeddings Capture?</h2>
 <ul>
 <li>Land cover patterns</li>
 <li>Vegetation characteristics</li>
@@ -278,7 +287,7 @@ Zhanchao Yang
 <p><strong>Dataset:</strong></p>
 <ul>
 <li><code>GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL</code></li>
-<li>65 bands</li>
+<li>70 bands</li>
 </ul>
 <p><strong>Key Operations:</strong></p>
 <ul>
@@ -411,7 +420,7 @@ Zhanchao Yang
   <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
   <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
-
+  
 
   <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
   <script src="../site_libs/revealjs/plugin/search/search.js"></script>
@@ -433,7 +442,7 @@ Zhanchao Yang
 'jumpToSlide': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'smaller': false,
-
+ 
         // Display controls in the bottom right corner
         controls: false,
 
@@ -619,7 +628,7 @@ Zhanchao Yang
         });
         const isCodeAnnotation = (el) => {
           for (const clz of el.classList) {
-            if (clz.startsWith('code-annotation-')) {
+            if (clz.startsWith('code-annotation-')) {                     
               return true;
             }
           }
@@ -639,11 +648,11 @@ Zhanchao Yang
             button.setAttribute("data-bs-toggle", "tooltip");
             button.setAttribute("data-bs-placement", "left");
             button.setAttribute("data-bs-title", "Copied!");
-            tooltip = new bootstrap.Tooltip(button,
-              { trigger: "manual",
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
                 customClass: "code-copy-button-tooltip",
                 offset: [0, -8]});
-            tooltip.show();
+            tooltip.show();    
           }
           setTimeout(function() {
             if (tooltip) {
@@ -721,7 +730,7 @@ Zhanchao Yang
           }
             config['offset'] = [0,0];
             config['maxWidth'] = 700;
-          window.tippy(el, config);
+          window.tippy(el, config); 
         }
         const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
         for (var i=0; i<noterefs.length; i++) {
@@ -778,6 +787,6 @@ Zhanchao Yang
         }
       });
       </script>
-
+    
 
 </body></html>
