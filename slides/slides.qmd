@@ -46,7 +46,7 @@ editor: visual
 
 ## Blackbox Nature of Embeddings
 
-:::::: columns
+::::: columns
 ::: {.column width="50%"}
 -   Generated through various neural network models (**GNN or CNN**) trained on a large datasets.
 -   Exact architecture and training process vary widely.
@@ -54,13 +54,13 @@ editor: visual
 :::
 
 ::: {.column width="50%"}
-![](images/pdfm5.png){top="0" width="700" height="450"} 
+![](images/pdfm5.png){top="0" width="700" height="450"}
 :::
-::::::
+:::::
 
 ## Population Dynamics Foundation (PDFM)
 
-:::::: columns
+::::: columns
 ::: {.column width="50%"}
 -   Developed by Google Research (Google Deep Mind) in 2024.
 -   Input:
@@ -71,15 +71,14 @@ editor: visual
     -   Multi-dimensional vectors (represent population characteristics and dynamics).
 :::
 
-
 ::: {.column width="50%"}
-![](images/pdfm1.jpg){top="0" width="700" height="450"} 
+![](images/pdfm1.jpg){top="0" width="700" height="450"}
 :::
-::::::
+:::::
 
 ## How PDFM Embeddings look like?
 
-:::::: columns
+::::: columns
 ::: {.column width="50%"}
 -   **330-dimensional vectors** for each census tract or ZIP code
 -   Each dimension captures different aspects of population dynamics
@@ -90,15 +89,14 @@ editor: visual
     -   Environmental conditions
 :::
 
-
 ::: {.column width="50%"}
 ![](images/PDFM2.jpg)
 :::
-::::::
+:::::
 
 ## Applications of PDFM Embeddings
 
-:::::: columns
+::::: columns
 ::: {.column width="50%"}
 **Health & Social Services:**
 
@@ -117,12 +115,12 @@ editor: visual
 :::
 
 ::: {.column width="50%"}
-
 ![](images/pdfm4.png)
 :::
-::::::
+:::::
 
 ## Additional Applications
+
 ![](images/pdfm3.png){top="0" width="900" height="550"}
 
 ## Demo 1: Using PDFM Embeddings to predict housing prices
