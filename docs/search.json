@@ -116,7 +116,7 @@
     "href": "slides/slides.html#applications-of-pdfm-embeddings",
     "title": "Satellite and Population Embedding",
     "section": "Applications of PDFM Embeddings",
-    "text": "Applications of PDFM Embeddings\n\n\nHealth & Social Services:\n\nDisease prevalence prediction\nHealthcare resource allocation\n\nEconomic Analysis:\n\nSocioeconomic indicators modeling\nIncome and poverty estimation\n\nUrban Planning:\n\nPopulation growth forecasting\nPOI and hotspot prediction"
+    "text": "Applications of PDFM Embeddings\n\n\nHealth & Social Services:\n\nDisease prevalence prediction\nHealthcare resource allocation\n\nEconomic Analysis:\n\nSocioeconomic indicators\nIncome and poverty estimation\n\nUrban Planning:\n\nPopulation growth forecasting\nPOI and hotspot prediction"
   },
   {
     "objectID": "slides/slides.html#additional-applications",
