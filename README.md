@@ -38,4 +38,4 @@ PDFM Embeddings can be applied to a wide range of geospatial prediction tasks, s
 
 By incorporating spatial relationships and diverse feature types, these embeddings serve as a powerful tool for geospatial predictions.
 
-## Google Earth Satellite Embeddings 
+## Google Earth Satellite Embeddings
