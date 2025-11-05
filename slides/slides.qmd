@@ -72,9 +72,7 @@ editor: visual
 :::
 
 ::: {.column width="50%"}
-
-![](images/pdfm1.jpg){top="0" width="700" height="450"}
-
+![](images/PDFM1.jpg){top="0" width="700" height="450"}
 :::
 :::::
 
@@ -92,9 +90,7 @@ editor: visual
 :::
 
 ::: {.column width="50%"}
-
 ![](images/PDFM2.jpg)
-
 :::
 :::::
 
@@ -119,9 +115,7 @@ editor: visual
 :::
 
 ::: {.column width="50%"}
-
 ![](images/pdfm4.png)
-
 :::
 :::::
 
