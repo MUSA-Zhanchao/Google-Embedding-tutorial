@@ -195,7 +195,7 @@ editor: visual
 **Temporal Analysis:**
 
 -   Seasonal pattern detection
--   Change Detection 
+-   Change Detection
 -   Similarity searches across time
 :::
 
