@@ -138,14 +138,23 @@ editor: visual
 
 ## Satellite Foundation Model (SFM) Embeddings
 
+::::: columns
+::: {.column width="50%"}
 -   Developed by Google Research
 -   Based on Sentinel-2 satellite imagery
 -   **Global coverage** (2017-2023)
 -   Spatial resolution: 10 meters
--   Available through Google Earth Engine
+-   Available through Google Earth Engine (GEE)
+:::
+
+::: {.column width="50%"}
+![](images/satellite.gif)
+:::
+:::::
 
 ## What Satellite Embeddings Capture?
-
+::::: columns
+::: {.column width="50%"}
 -   Land cover patterns
 -   Vegetation characteristics
 -   Urban development
@@ -153,6 +162,12 @@ editor: visual
 -   Temporal dynamics
 
 [Trained on massive satellite imagery corpus using self-supervised learning]{style="font-size: 0.9em;"}
+:::
+
+::: {.column width="50%"}
+![](images/headline_aef.png)
+:::
+:::::
 
 ## Satellite Embeddings with Google Earth Engine (GEE)
 
@@ -170,19 +185,24 @@ editor: visual
 
 ## Applications of SFM Embeddings
 
+::::: columns
+::: {.column width="50%"}
 **Environmental and Land Use Planning**
 
 -   Urban sprawl analysis
 -   Land cover classification
--   Change detection
--   Development planning
 
 **Temporal Analysis:**
 
 -   Seasonal pattern detection
--   Long-term trend analysis
--   Before/after comparisons
+-   Change Detection
 -   Similarity searches across time
+:::
+
+::: {.column width="50%"}
+![](images/satellite-app.png)
+:::
+:::::
 
 ## Demo 2: Satellite Embeddings for Land Cover Classification
 
@@ -230,6 +250,8 @@ editor: visual
 
 ## Summary and Conclusions
 
+::::: columns
+::: {.column width="50%"}
 **The Promise:**
 
 -   Powerful tools for spatial analysis
@@ -244,10 +266,18 @@ editor: visual
 
 -   Validate predictions thoroughly
 -   Be aware of limitations and biases
+:::
+
+::: {.column width="50%"}
+![](images/blackBox.png)
+:::
+:::::
 
 ## Final Verdict
 
 [Powerful GeoAI tools, but use with caution and critical thinking!]{style="font-size: 1.1em; font-weight: bold;"}
+
+[All models are false, but some are useful]{style="font-size: 1.1em; font-weight: bold;"}
 
 ## References
 
