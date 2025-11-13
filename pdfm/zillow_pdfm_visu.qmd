@@ -507,7 +507,7 @@ ggplot(eval_df_step, aes(x = actual, y = predicted)) +
 combined_eval <- data.frame(
   actual = rep(y_test, 2),
   predicted = c(y_pred_lr, y_pred_step),
-  model = rep(c("Linear Regression", "Stepwise Regression"), 
+  model = rep(c("Linear Regression", "Stepwise Regression"),
               each = length(y_test))
 )
 
@@ -550,13 +550,13 @@ eval_with_geo <- data.frame(
   difference = y_test - y_pred_lr
 ) %>%
   left_join(
-    zhvi_gdf %>% 
-      st_drop_geometry() %>% 
+    zhvi_gdf %>%
+      st_drop_geometry() %>%
       select(place, RegionName, State),
     by = "place"
   ) %>%
   left_join(
-    county_gdf %>% 
+    county_gdf %>%
       rownames_to_column("place") %>%
       select(place, geometry),
     by = "place"
@@ -618,7 +618,7 @@ leaflet(eval_with_geo) %>%
 
 1. **PDFM Embeddings as Features**: The 330-dimensional PDFM embeddings successfully capture spatial patterns relevant to home value prediction.
 
-2. **Model Performance**: 
+2. **Model Performance**:
    - Linear regression provides a straightforward baseline using all features
    - Stepwise regression offers automatic feature selection and potentially improved generalization
 
