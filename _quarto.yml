@@ -12,6 +12,8 @@ website:
         text: Presentation
       - text: Demos
         menu:
+          - href: pdfm/zillow_pdfm_visu.qmd
+            text: "PDFM Demo: Zillow Home Value Prediction with Linear and Stepwise Regression"
           - href: satellite-embedding/demo2/landcover-classification.ipynb
             text: "Demo 2: Land Cover Classification with K-Means Clustering (reformatted)"
 
