@@ -19,6 +19,7 @@ In recent years, Google has introduced two powerful embedding for spatial analys
 - Google Earth Embedding
 
 Credit:
+
 - [Dr. Qiusheng Wu PDFM tutorial](https://github.com/opengeos/GeoAI-Tutorials)
 - [Dr. Qiusheng Wu Google Earth Embedding tutorial](https://leafmap.org/maplibre/AlphaEarth)
 - [Google official JavaScript Satellite Embedding tutorial](https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-02-unsupervised-classification)
