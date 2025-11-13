@@ -285,7 +285,7 @@ editor: visual
 :::
 :::::
 
-## Final Verdict 
+## Final Verdict
 
 <br>
 <br>
