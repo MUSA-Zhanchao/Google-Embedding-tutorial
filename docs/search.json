@@ -1,82 +1,5 @@
 [
   {
-    "objectID": "satellite-embedding/regression.html",
-    "href": "satellite-embedding/regression.html",
-    "title": "Visulization",
-    "section": "",
-    "text": "Code\nimport geemap\nimport ee\nCode\nee.Authenticate()\nCode\nee.Initialize(project=\"ee-zhanchaoyang\")\nCode\nm = geemap.Map(center=(40, -100), zoom=4)\nm\nCode\ngeometry = ee.Geometry.Polygon(\n    [[74.322, 14.981], [74.322, 14.765], [74.648, 14.765], [74.648, 14.980]]\n)\nCode\nm.add_basemap(\"SATELLITE\")\nCode\nm.addLayer(geometry, {}, \"geometry\")\nm.centerObject(geometry)\nCode\nstartDate = ee.Date.fromYMD(2022, 1, 1)\nCode\nendDate = ee.Date.fromYMD(2023, 1, 1)\nCode\nembeddings = ee.ImageCollection(\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\")\nCode\nembeddingsFiltered = embeddings.filter(ee.Filter.date(startDate, endDate)).filter(\n    ee.Filter.bounds(geometry)\n)\nCode\nembeddings_vis = embeddingsFiltered.median().clip(geometry)\nCode\nvis_params = {\n    \"bands\": [\"A00\", \"A01\", \"A02\"],\n    \"min\": -0.5,\n    \"max\": 0.5,\n}\nCode\nm.addLayer(embeddings_vis, vis_params, \"embeddings\")\nm"
-  },
-  {
-    "objectID": "satellite-embedding/regression.html#tasks-continue",
-    "href": "satellite-embedding/regression.html#tasks-continue",
-    "title": "Visulization",
-    "section": "Tasks continue",
-    "text": "Tasks continue\n\n\nCode\n# check the projections\nembeddingsProjection = ee.Image(embeddingsFiltered.first()).select(0).projection()\n\n\n\n\nCode\nembeddingsProjection\n\n\n\n\nCode\nembeddingsImage = embeddingsFiltered.mosaic().setDefaultProjection(embeddingsProjection)\n\n\n\n\nCode\ngedi = ee.ImageCollection(\"LARSE/GEDI/GEDI04_A_002_MONTHLY\")\n\n\n\n\nCode\ndef qualityMask(image):\n    mask = image.updateMask(image.select(\"l4_quality_flag\").eq(1)).updateMask(\n        image.select(\"degrade_flag\").eq(0)\n    )\n    return mask\n\n\n\n\nCode\ndef errorMask(image):\n    relative_se = image.select(\"agbd_se\").divide(image.select(\"agbd\"))\n    error_mask = image.updateMask(relative_se.lte(0.5))\n    return error_mask\n\n\n\n\nCode\ndef SlopeMask(image):\n    glo30 = ee.ImageCollection(\"COPERNICUS/DEM/GLO30\")\n    glo30Filtered = glo30.filter(ee.Filter.bounds(geometry)).select(\"DEM\")\n    demProj = glo30Filtered.first().select(0).projection()\n    elevation = glo30Filtered.mosaic().rename(\"dem\").setDefaultProjection(demProj)\n    slope = ee.Terrain.slope(elevation)\n    slope_mask = image.updateMask(slope.lte(30))\n    return slope_mask\n\n\n\n\nCode\ngediFiltered = gedi.filter(ee.Filter.date(startDate, endDate)).filter(\n    ee.Filter.bounds(geometry)\n)\n\n\n\n\nCode\ngediProjection = ee.Image(gediFiltered.first()).select(\"agbd\").projection()\n\n\n\n\nCode\ngedi_processed = gediFiltered.map(qualityMask).map(errorMask).map(SlopeMask)\n\n\n\n\nCode\ngediMosaic = gedi_processed.mosaic().select(\"agbd\").setDefaultProjection(gediProjection)\n\n\n\n\nCode\ngediVis = {\n    min: 0,\n    max: 200,\n    \"palette\": [\"#edf8fb\", \"#b2e2e2\", \"#66c2a4\", \"#2ca25f\", \"#006d2c\"],\n    \"bands\": [\"agbd\"],\n}\n\n\n\n\nCode\nm.addLayer(gedi_processed, gediVis, \"gedi\")\nm\n\n\n\n\nCode\ngridScale = 100\n\n\n\n\nCode\ngridProjection = ee.Projection(\"EPSG:3857\").atScale(gridScale)\n\n\n\n\nCode\nstacked = embeddingsImage.addBands(gediMosaic)\n\n\n\n\nCode\nstacked = stacked.resample(\"bilinear\")\n\n\n\n\nCode\nstackedResampled = stacked.reduceResolution(\n    reducer=ee.Reducer.mean(), maxPixels=1024\n).reproject(crs=gridProjection)\n\n\n\n\nCode\nstackedResampled = stackedResampled.updateMask(stackedResampled.mask().gt(0))\n\n\n\n\nCode\nexport_image = stackedResampled.clip(geometry)\n\n\n\n\nCode\ngeemap.ee_export_image_to_drive(\n    export_image,\n    description=\"GEDI_Mosaic_Export\",\n    folder=\"EarthEngine\",  # Change to your Google Drive folder\n    fileNamePrefix=\"gedi_mosaic\",  # No \".tif\" extension\n    scale=gridScale,\n    region=geometry,\n    maxPixels=1e10,\n)\n\n\n\n\nCode\npredictors = embeddingsImage.bandNames()\n\n\n\n\nCode\npredicted = gediMosaic.bandNames().get(0)\n\n\n\n\nCode\nprint(\"predictors\", predictors.getInfo())\n\n\n\n\nCode\nprint(\"predicted\", predicted.getInfo())\n\n\n\n\nCode\npredictorImage = stackedResampled.select(predictors)\n\n\n\n\nCode\npredictedImage = stackedResampled.select([predicted])\n\n\n\n\nCode\nclassMask = predictedImage.mask().toInt().rename(\"class\")\n\n\n\n\nCode\nnumSamples = 1000\n\n\n\n\nCode\ntraining = stackedResampled.addBands(classMask).stratifiedSample(\n    numPoints=numSamples,\n    classBand=\"class\",\n    region=geometry,\n    scale=gridScale,\n    classValues=[0, 1],\n    classPoints=[0, numSamples],\n    dropNulls=True,\n    tileScale=16,\n)\n\n\n\n\nCode\nmodel = (\n    ee.Classifier.smileRandomForest(50)\n    .setOutputMode(\"REGRESSION\")\n    .train(features=training, classProperty=predicted, inputProperties=predictors)\n)\n\n\n\n\nCode\npredicted = training.classify(classifier=model, outputName=\"agbd_predicted\")\n\n\n\n\nCode\ndef calculatermse(inputs):\n    observed = ee.Array(inputs.aggregate_array(\"agbd\"))\n    predicted = ee.Array(inputs.aggregate_array(\"agbd_predicted\"))\n    rmse = (\n        observed.subtract(predicted)\n        .pow(2)\n        .reduce(ee.Reducer.mean(), [0])\n        .sqrt()\n        .get([0])\n    )\n    return rmse\n\n\n\n\nCode\nrmse = calculatermse(predicted)\nprint(\"RMSE\", rmse.getInfo())"
-  },
-  {
-    "objectID": "satellite-embedding/regression.html#plot",
-    "href": "satellite-embedding/regression.html#plot",
-    "title": "Visulization",
-    "section": "Plot",
-    "text": "Plot\n\n\nCode\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt"
-  },
-  {
-    "objectID": "satellite-embedding/google_earth_embedding.html",
-    "href": "satellite-embedding/google_earth_embedding.html",
-    "title": "Google Embeddings tutorial",
-    "section": "",
-    "text": "Code\nimport ee\n\n\n\n\nCode\nimport leafmap.maplibregl as leafmap\n\n\n\n\nCode\nee.Authenticate()\n\n\n\n\nCode\nee.Initialize(project=\"ee-zhanchaoyang\")\n\n\n\n\nCode\nm = leafmap.Map(projection=\"globe\", sidebar_visible=True)\nm.add_basemap(\"USGS.Imagery\")\nm.add_alphaearth_gui()\nm\n\n\n\n\nCode\nm = leafmap.Map(projection=\"globe\", sidebar_visible=True)\nm.add_basemap(\"USGS.Imagery\")\nm\n\n\n\n\nCode\nlon = -75.191\nlat = 39.9515\nm.set_center(lon, lat, zoom=16)\n\n\n\n\nCode\npoint = ee.Geometry.Point(lon, lat)\ndataset = ee.ImageCollection(\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\")\n\n\n\n\nCode\nimage1 = dataset.filterDate(\"2017-01-01\", \"2018-01-01\").filterBounds(point).first()\nimage2 = dataset.filterDate(\"2024-01-01\", \"2025-01-01\").filterBounds(point).first()\n\n\n\n\nCode\nvis_params = {\"min\": -0.3, \"max\": 0.3, \"bands\": [\"A01\", \"A16\", \"A09\"]}\nm.add_ee_layer(image1, vis_params, name=\"Year 1 embeddings\")\nm.add_ee_layer(image2, vis_params, name=\"Year 2 embeddings\")\n\n\n\n\nCode\ndot_prod = image1.multiply(image2).reduce(ee.Reducer.sum())\n\n\n\n\nCode\nvis_params = {\"min\": 0, \"max\": 1, \"palette\": [\"white\", \"black\"]}\nm.add_ee_layer(dot_prod, vis_params, name=\"Similarity\")\nm"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Google Embeddings tutorial",
-    "section": "",
-    "text": "Author: Zhanchao Yang"
-  },
-  {
-    "objectID": "index.html#gis-day-lightning-talk-for-the-university-of-pennsylvania",
-    "href": "index.html#gis-day-lightning-talk-for-the-university-of-pennsylvania",
-    "title": "Google Embeddings tutorial",
-    "section": "GIS day lightning talk for the University of Pennsylvania",
-    "text": "GIS day lightning talk for the University of Pennsylvania\n11.19.2025\n\nTopic\nSatellite and Population Embeddings: Powerful GeoAI Tools or Overrated? ### Abstract\nIn recent years, Google has introduced two powerful embedding for spatial analysis: satellite imagery embeddings, which capture visual and environmental patterns from overhead imagery, and population embeddings, which encode demographic and mobility information at high spatial resolutions. These embeddings promise to make geospatial machine learning more scalable, flexible, and transferable, but do they deliver? This talk will begin with an introduction to both embedding types, representation, and the types of spatial signals they capture. A short live demo will walk through two practical use cases: land use classification and estimating housing prices using these embeddings as inputs. These examples will illustrate the potential of embedding-based GeoAI to outperform traditional feature engineering. However, the talk will also highlight critical limitations: the opacity of learned representations, challenges in interpretability and validation, and the risk of reinforcing spatial and social biases. By the end, attendees will gain a clear understanding of both the capabilities and caveats of these embeddings, and when (or whether) they should be trusted in decision-making contexts."
-  },
-  {
-    "objectID": "index.html#type-of-embedding",
-    "href": "index.html#type-of-embedding",
-    "title": "Google Embeddings tutorial",
-    "section": "Type of Embedding",
-    "text": "Type of Embedding\n\nPDFM Embedding\nGoogle Earth Embedding\n\nCredit: - Dr. Qiusheng Wu PDFM tutorial - Dr. Qiusheng Wu Google Earth Embedding tutorial - Google official JavaScript Satellite Embedding tutorial - Google PDFM Embedding - Google Earth Satellite Embedding\nALL Exert or modify from original Repo, all rights reserved to the original author!"
-  },
-  {
-    "objectID": "index.html#population-dynamics-foundation-model-pdfm-embeddings",
-    "href": "index.html#population-dynamics-foundation-model-pdfm-embeddings",
-    "title": "Google Embeddings tutorial",
-    "section": "Population Dynamics Foundation Model (PDFM) Embeddings",
-    "text": "Population Dynamics Foundation Model (PDFM) Embeddings\nPDFM Embeddings are condensed vector representations designed to encapsulate the complex, multidimensional interactions among human behaviors, environmental factors, and local contexts at specific locations. These embeddings capture patterns in aggregated data such as search trends, busyness trends, and environmental conditions (maps, air quality, temperature), providing a rich, location-specific snapshot of how populations engage with their surroundings. Aggregated over space and time, these embeddings ensure privacy while enabling nuanced spatial analysis and prediction for applications ranging from public health to socioeconomic modeling."
-  },
-  {
-    "objectID": "index.html#application",
-    "href": "index.html#application",
-    "title": "Google Embeddings tutorial",
-    "section": "Application",
-    "text": "Application\nPDFM Embeddings can be applied to a wide range of geospatial prediction tasks, similar to census and socioeconomic statistics. Example use cases include:\n\nPopulation Health Outcomes: Predicting health statistics like disease prevalence or population health risks.\nSocioeconomic Factors: Modeling economic indicators and living conditions.\nRetail: Identifying promising locations for new stores, market expansion, and demand forecasting.\nMarketing and Sales: Characterizing high-performance regions and identifying similar areas to optimize marketing and sales efforts.\n\nBy incorporating spatial relationships and diverse feature types, these embeddings serve as a powerful tool for geospatial predictions."
-  },
-  {
-    "objectID": "pdfm/zillow_pdfm.html",
-    "href": "pdfm/zillow_pdfm.html",
-    "title": "Google Embeddings tutorial",
-    "section": "",
-    "text": "Code\nimport os\nimport pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.neighbors import KNeighborsRegressor\nfrom leafmap.common import evaluate_model, plot_actual_vs_predicted, download_file\n\n\n\n\nCode\nzhvi_file = \"/home/zyang91/Desktop/data/zillow_home_value_index_by_zipcode.csv\"\n\n\n\n\nCode\nzhvi_df = pd.read_csv(zhvi_file, dtype={\"RegionName\": str})\nzhvi_df.index = zhvi_df[\"RegionName\"].apply(lambda x: f\"zip/{x}\")\nzhvi_df\n\n\n\n\nCode\nembeddings_file = \"/home/zyang91/Desktop/us/zcta_embeddings.csv\"\n\n\n\n\nCode\nzipcode_embeddings = pd.read_csv(embeddings_file).set_index(\"place\")\nzipcode_embeddings\n\n\n\n\nCode\ndata = zhvi_df.join(zipcode_embeddings, how=\"inner\")\ndata\n\n\n\n\nCode\nembedding_features = [f\"feature{x}\" for x in range(330)]\nlabel = \"2024-10-31\"\n\n\n\n\nCode\ndata = data.dropna(subset=[label])\ndata\n\n\n\n\nCode\ndata = data[embedding_features + [label]]\nX = data[embedding_features]\ny = data[label]\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\n\n\n\nCode\n# Initialize and train a simple linear regression model\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)\n\n# Make predictions\ny_pred = model.predict(X_test)\n\n\n\n\nCode\nevaluation_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluation_df)\nprint(metrics)\n\n\n\n\nCode\nxy_lim = (0, 3_000_000)\nplot_actual_vs_predicted(\n    evaluation_df,\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=\"Actual vs Predicted Home Values\",\n    x_label=\"Actual Home Value\",\n    y_label=\"Predicted Home Value\",\n)\n\n\n\n\nCode\nevaluate_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluate_df)\nprint(metrics)\n\n\n\n\nCode\nevaluate_df.head()\n\n\n\n\nCode\nxy_lim = (0, 3000000)\nplot_actual_vs_predicted(\n    evaluate_df,\n    x_label=\"Actual\",\n    y_label=\"Predicted\",\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=\"Actual vs Predicted ZHVI\",\n)\n\n\n\n\nCode\nk = 5\nknn_model = KNeighborsRegressor(n_neighbors=k)\nknn_model.fit(X_train, y_train)\ny_pred = knn_model.predict(X_test)\n\n\n\n\nCode\nplot_actual_vs_predicted(\n    evaluate_df,\n    x_label=\"Actual\",\n    y_label=\"Predicted\",\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=f\"Actual vs Predicted ZHVI (KNN, k={k})\",\n)\n\n\n\n\nCode\nevaluation_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluation_df)\nprint(metrics)"
-  },
-  {
-    "objectID": "pdfm/zillow_pdfm_visu.html",
-    "href": "pdfm/zillow_pdfm_visu.html",
-    "title": "Google Embeddings tutorial",
-    "section": "",
-    "text": "Code\nimport os\nimport pandas as pd\nimport geopandas as gpd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.neighbors import KNeighborsRegressor\nfrom leafmap.common import evaluate_model, plot_actual_vs_predicted, download_file\nimport leafmap.maplibregl as leafmap\n\n\n\n\nCode\nzhvi = \"https://github.com/opengeos/datasets/releases/download/us/zillow_home_value_index_by_county.csv\"\nzhvo_file = \"zillow_home_value_index_by_county.csv\"\nif not os.path.exists(zhvo_file):\n    download_file(zhvi, zhvo_file)\n\n\n\n\nCode\nzhvi_df = pd.read_csv(zhvo_file, dtype={\"StateCodeFIPS\": str, \"MunicipalCodeFIPS\": str})\nzhvi_df.index = \"geoId/\" + zhvi_df[\"StateCodeFIPS\"] + zhvi_df[\"MunicipalCodeFIPS\"]\nzhvi_df.head()\n\n\n\n\nCode\ncounty_geojson = \"/home/zyang91/Desktop/us/county.geojson\"\n\n\n\n\nCode\ncounty_gdf = gpd.read_file(county_geojson)\ncounty_gdf.set_index(\"place\", inplace=True)\ncounty_gdf.head()\n\n\n\n\nCode\ndf = zhvi_df.join(county_gdf)\ndf\n\n\n\n\nCode\nzhvi_gdf = gpd.GeoDataFrame(df, geometry=\"geometry\")\nzhvi_gdf.head()\n\n\n\n\nCode\ncolumn = \"2024-10-31\"\ngdf = zhvi_gdf[[\"RegionName\", \"State\", column, \"geometry\"]]\ngdf.head()\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\")\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    legend_title=\"Zillow Home Median Home Value\",\n    name=\"Zillow Home Median Home Value\",\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\", pitch=60)\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    extrude=True,\n    scale_factor=3,\n    legend_title=\"Zillow Home Median Home Value\",\n    name=\"Zillow Home Median Home Value\",\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\nembeddings = pd.read_csv(\"/home/zyang91/Desktop/us/county_embeddings.csv\").set_index(\n    \"place\"\n)\nembeddings.head()\n\n\n\n\nCode\ndf = embeddings.join(county_gdf)\n\n\n\n\nCode\nembeddings_gdf = gpd.GeoDataFrame(df, geometry=\"geometry\")\nembeddings_gdf.head()\n\n\n\n\nCode\ncolumn = \"feature329\"\ngdf = embeddings_gdf[[\"state\", column, \"geometry\"]]\ngdf.head()\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\")\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    legend_title=column,\n    name=column,\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\", pitch=60)\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    extrude=True,\n    scale_factor=0.00005,\n    legend_title=column,\n    name=column,\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\ndata = zhvi_df.join(embeddings, how=\"inner\")\ndata.head()\n\n\n\n\nCode\nembedding_features = [f\"feature{i}\" for i in range(330)]\nlabel = \"2024-10-31\"\n\n\n\n\nCode\ndata = data.dropna(subset=[label])\n\n\n\n\nCode\ndata = data[embedding_features + [label]]\nx = data[embedding_features]\ny = data[label]\nx_train, x_test, y_train, y_test = train_test_split(\n    x, y, test_size=0.2, random_state=42\n)\n\n\n\n\nCode\nmodel = LinearRegression()\nmodel.fit(x_train, y_train)\ny_pred = model.predict(x_test)\n\n\n\n\nCode\nevaluation_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluation_df)\nprint(metrics)\n\n\n\n\nCode\nxy_lim = (0, 1000000)\nplot_actual_vs_predicted(\n    evaluation_df,\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=\"Linear Regression: Actual vs Predicted\",\n    x_label=\"Actual Home Value\",\n    y_label=\"Predicted Home Value\",\n)\n\n\n\n\nCode\ndf = evaluation_df.join(gdf)\ndf[\"difference\"] = df[\"y\"] - df[\"y_pred\"]\n\n\n\n\nCode\ndf.head()\n\n\n\n\nCode\ngdf = gpd.GeoDataFrame(df, geometry=\"geometry\")\ngdf.head()\n\n\n\n\nCode\ngdf.drop(columns=[\"category\", \"color\", column], inplace=True)\ngdf.head()\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\")\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=\"difference\",\n    legend_title=\"Difference (Actual - Predicted)\",\n    name=\"Difference\",\n)\nm.add_layer_control()\nm"
-  },
-  {
     "objectID": "slides/slides.html#about-me",
     "href": "slides/slides.html#about-me",
     "title": "Satellite and Population Embedding",
@@ -137,14 +60,14 @@
     "href": "slides/slides.html#satellite-foundation-model-sfm-embeddings",
     "title": "Satellite and Population Embedding",
     "section": "Satellite Foundation Model (SFM) Embeddings",
-    "text": "Satellite Foundation Model (SFM) Embeddings\n\nDeveloped by Google Research\nBased on Sentinel-2 satellite imagery\nGlobal coverage (2017-2023)\nSpatial resolution: 10 meters\nAvailable through Google Earth Engine"
+    "text": "Satellite Foundation Model (SFM) Embeddings\n\n\n\nDeveloped by Google Research\nBased on Sentinel-2 satellite imagery\nGlobal coverage (2017-2023)\nSpatial resolution: 10 meters\nAvailable through Google Earth Engine (GEE)"
   },
   {
     "objectID": "slides/slides.html#what-satellite-embeddings-capture",
     "href": "slides/slides.html#what-satellite-embeddings-capture",
     "title": "Satellite and Population Embedding",
     "section": "What Satellite Embeddings Capture?",
-    "text": "What Satellite Embeddings Capture?\n\nLand cover patterns\nVegetation characteristics\nUrban development\nEnvironmental changes\nTemporal dynamics\n\nTrained on massive satellite imagery corpus using self-supervised learning"
+    "text": "What Satellite Embeddings Capture?\n\n\n\nLand cover patterns\nVegetation characteristics\nUrban development\nEnvironmental changes\nTemporal dynamics\n\nTrained on massive satellite imagery corpus using self-supervised learning"
   },
   {
     "objectID": "slides/slides.html#satellite-embeddings-with-google-earth-engine-gee",
@@ -158,14 +81,14 @@
     "href": "slides/slides.html#applications-of-sfm-embeddings",
     "title": "Satellite and Population Embedding",
     "section": "Applications of SFM Embeddings",
-    "text": "Applications of SFM Embeddings\nEnvironmental and Land Use Planning\n\nUrban sprawl analysis\nLand cover classification\nChange detection\nDevelopment planning\n\nTemporal Analysis:\n\nSeasonal pattern detection\nLong-term trend analysis\nBefore/after comparisons\nSimilarity searches across time"
+    "text": "Applications of SFM Embeddings\n\n\nEnvironmental and Land Use Planning\n\nUrban sprawl analysis\nLand cover classification\n\nTemporal Analysis:\n\nSeasonal pattern detection\nChange Detection\nSimilarity searches across time"
   },
   {
     "objectID": "slides/slides.html#demo-2-satellite-embeddings-for-land-cover-classification",
     "href": "slides/slides.html#demo-2-satellite-embeddings-for-land-cover-classification",
     "title": "Satellite and Population Embedding",
     "section": "Demo 2: Satellite Embeddings for Land Cover Classification",
-    "text": "Demo 2: Satellite Embeddings for Land Cover Classification\nApproach:\n\nUse embeddings as features\nTrain classification model\nPredict land cover types\n\nAdvantages:\n\nNo need to process raw imagery\nPre-trained representations\nFaster than traditional methods"
+    "text": "Demo 2: Satellite Embeddings for Land Cover Classification\n\n\nApproach:\n\nUse embeddings as features\nTrain classification model\nPredict land cover types\n\nAdvantages:\n\nNo need to process raw imagery\nPre-trained representations\nFaster than traditional methods"
   },
   {
     "objectID": "slides/slides.html#workflow",
@@ -186,14 +109,14 @@
     "href": "slides/slides.html#summary-and-conclusions",
     "title": "Satellite and Population Embedding",
     "section": "Summary and Conclusions",
-    "text": "Summary and Conclusions\nThe Promise:\n\nPowerful tools for spatial analysis\nCapture complex patterns (Privacy concerns)\n\nThe Reality:\n\nRequire careful validation\nComplement, not replace\n\nBest Practices:\n\nValidate predictions thoroughly\nBe aware of limitations and biases"
+    "text": "Summary and Conclusions\n\n\nThe Promise:\n\nPowerful tools for spatial analysis\nCapture complex patterns\n\nThe Reality:\n\nRequire careful validation\nComplement, not replace\n\nBest Practices:\n\nValidate predictions thoroughly\nBe aware of limitations and biases"
   },
   {
     "objectID": "slides/slides.html#final-verdict",
     "href": "slides/slides.html#final-verdict",
     "title": "Satellite and Population Embedding",
     "section": "Final Verdict",
-    "text": "Final Verdict\nPowerful GeoAI tools, but use with caution and critical thinking!"
+    "text": "Final Verdict\n \n\nPowerful GeoAI tools, but use with caution and critical thinking!\n\n\n“All models are false, but some are useful”"
   },
   {
     "objectID": "slides/slides.html#references",
@@ -201,6 +124,62 @@
     "title": "Satellite and Population Embedding",
     "section": "References",
     "text": "References\n\nGoogle Research:\n\nGoogle PDFM Embeddings: github.com/google-research/population-dynamics\nSatellite Embeddings Dataset: developers.google.com/earth-engine/datasets/catalog/GOOGLE_SATELLITE_EMBEDDING_V1_ANNUAL\n\nTutorials & Resources:\n\nDr. Qiusheng Wu PDFM Tutorial: github.com/opengeos/GeoAI-Tutorials\nDr. Qiusheng Wu Earth Embedding Tutorial: leafmap.org/maplibre/AlphaEarth\nGoogle Earth Engine Tutorial: developers.google.com/earth-engine/tutorials/community/satellite-embedding-02-unsupervised-classification\n\nThis Presentation:\n\nGitHub Repository: github.com/zyang91/Google-Embedding-tutorial"
+  },
+  {
+    "objectID": "satellite-embedding/google_earth_embedding.html",
+    "href": "satellite-embedding/google_earth_embedding.html",
+    "title": "Google Embeddings tutorial",
+    "section": "",
+    "text": "Code\nimport ee\n\n\n\n\nCode\nimport leafmap.maplibregl as leafmap\n\n\n\n\nCode\nee.Authenticate()\n\n\n\n\nCode\nee.Initialize(project=\"ee-zhanchaoyang\")\n\n\n\n\nCode\nm = leafmap.Map(projection=\"globe\", sidebar_visible=True)\nm.add_basemap(\"USGS.Imagery\")\nm.add_alphaearth_gui()\nm\n\n\n\n\nCode\nm = leafmap.Map(projection=\"globe\", sidebar_visible=True)\nm.add_basemap(\"USGS.Imagery\")\nm\n\n\n\n\nCode\nlon = -75.191\nlat = 39.9515\nm.set_center(lon, lat, zoom=16)\n\n\n\n\nCode\npoint = ee.Geometry.Point(lon, lat)\ndataset = ee.ImageCollection(\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\")\n\n\n\n\nCode\nimage1 = dataset.filterDate(\"2017-01-01\", \"2018-01-01\").filterBounds(point).first()\nimage2 = dataset.filterDate(\"2024-01-01\", \"2025-01-01\").filterBounds(point).first()\n\n\n\n\nCode\nvis_params = {\"min\": -0.3, \"max\": 0.3, \"bands\": [\"A01\", \"A16\", \"A09\"]}\nm.add_ee_layer(image1, vis_params, name=\"Year 1 embeddings\")\nm.add_ee_layer(image2, vis_params, name=\"Year 2 embeddings\")\n\n\n\n\nCode\ndot_prod = image1.multiply(image2).reduce(ee.Reducer.sum())\n\n\n\n\nCode\nvis_params = {\"min\": 0, \"max\": 1, \"palette\": [\"white\", \"black\"]}\nm.add_ee_layer(dot_prod, vis_params, name=\"Similarity\")\nm"
+  },
+  {
+    "objectID": "pdfm/zillow_pdfm_visu.html",
+    "href": "pdfm/zillow_pdfm_visu.html",
+    "title": "Google Embeddings tutorial",
+    "section": "",
+    "text": "Code\nimport os\nimport pandas as pd\nimport geopandas as gpd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.neighbors import KNeighborsRegressor\nfrom leafmap.common import evaluate_model, plot_actual_vs_predicted, download_file\nimport leafmap.maplibregl as leafmap\n\n\n\n\nCode\nzhvi = \"https://github.com/opengeos/datasets/releases/download/us/zillow_home_value_index_by_county.csv\"\nzhvo_file = \"zillow_home_value_index_by_county.csv\"\nif not os.path.exists(zhvo_file):\n    download_file(zhvi, zhvo_file)\n\n\n\n\nCode\nzhvi_df = pd.read_csv(zhvo_file, dtype={\"StateCodeFIPS\": str, \"MunicipalCodeFIPS\": str})\nzhvi_df.index = \"geoId/\" + zhvi_df[\"StateCodeFIPS\"] + zhvi_df[\"MunicipalCodeFIPS\"]\nzhvi_df.head()\n\n\n\n\nCode\ncounty_geojson = \"/home/zyang91/Desktop/us/county.geojson\"\n\n\n\n\nCode\ncounty_gdf = gpd.read_file(county_geojson)\ncounty_gdf.set_index(\"place\", inplace=True)\ncounty_gdf.head()\n\n\n\n\nCode\ndf = zhvi_df.join(county_gdf)\ndf\n\n\n\n\nCode\nzhvi_gdf = gpd.GeoDataFrame(df, geometry=\"geometry\")\nzhvi_gdf.head()\n\n\n\n\nCode\ncolumn = \"2024-10-31\"\ngdf = zhvi_gdf[[\"RegionName\", \"State\", column, \"geometry\"]]\ngdf.head()\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\")\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    legend_title=\"Zillow Home Median Home Value\",\n    name=\"Zillow Home Median Home Value\",\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\", pitch=60)\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    extrude=True,\n    scale_factor=3,\n    legend_title=\"Zillow Home Median Home Value\",\n    name=\"Zillow Home Median Home Value\",\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\nembeddings = pd.read_csv(\"/home/zyang91/Desktop/us/county_embeddings.csv\").set_index(\n    \"place\"\n)\nembeddings.head()\n\n\n\n\nCode\ndf = embeddings.join(county_gdf)\n\n\n\n\nCode\nembeddings_gdf = gpd.GeoDataFrame(df, geometry=\"geometry\")\nembeddings_gdf.head()\n\n\n\n\nCode\ncolumn = \"feature329\"\ngdf = embeddings_gdf[[\"state\", column, \"geometry\"]]\ngdf.head()\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\")\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    legend_title=column,\n    name=column,\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\", pitch=60)\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=column,\n    extrude=True,\n    scale_factor=0.00005,\n    legend_title=column,\n    name=column,\n)\nm.add_layer_control()\nm\n\n\n\n\nCode\ndata = zhvi_df.join(embeddings, how=\"inner\")\ndata.head()\n\n\n\n\nCode\nembedding_features = [f\"feature{i}\" for i in range(330)]\nlabel = \"2024-10-31\"\n\n\n\n\nCode\ndata = data.dropna(subset=[label])\n\n\n\n\nCode\ndata = data[embedding_features + [label]]\nx = data[embedding_features]\ny = data[label]\nx_train, x_test, y_train, y_test = train_test_split(\n    x, y, test_size=0.2, random_state=42\n)\n\n\n\n\nCode\nmodel = LinearRegression()\nmodel.fit(x_train, y_train)\ny_pred = model.predict(x_test)\n\n\n\n\nCode\nevaluation_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluation_df)\nprint(metrics)\n\n\n\n\nCode\nxy_lim = (0, 1000000)\nplot_actual_vs_predicted(\n    evaluation_df,\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=\"Linear Regression: Actual vs Predicted\",\n    x_label=\"Actual Home Value\",\n    y_label=\"Predicted Home Value\",\n)\n\n\n\n\nCode\ndf = evaluation_df.join(gdf)\ndf[\"difference\"] = df[\"y\"] - df[\"y_pred\"]\n\n\n\n\nCode\ndf.head()\n\n\n\n\nCode\ngdf = gpd.GeoDataFrame(df, geometry=\"geometry\")\ngdf.head()\n\n\n\n\nCode\ngdf.drop(columns=[\"category\", \"color\", column], inplace=True)\ngdf.head()\n\n\n\n\nCode\nm = leafmap.Map(style=\"liberty\")\nm.add_data(\n    gdf,\n    cmap=\"Blues\",\n    column=\"difference\",\n    legend_title=\"Difference (Actual - Predicted)\",\n    name=\"Difference\",\n)\nm.add_layer_control()\nm"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Google Embeddings tutorial",
+    "section": "",
+    "text": "Author: Zhanchao Yang"
+  },
+  {
+    "objectID": "index.html#gis-day-lightning-talk-for-the-university-of-pennsylvania",
+    "href": "index.html#gis-day-lightning-talk-for-the-university-of-pennsylvania",
+    "title": "Google Embeddings tutorial",
+    "section": "GIS day lightning talk for the University of Pennsylvania",
+    "text": "GIS day lightning talk for the University of Pennsylvania\n11.19.2025\n\nTopic\nSatellite and Population Embeddings: Powerful GeoAI Tools or Overrated? ### Abstract\nIn recent years, Google has introduced two powerful embedding for spatial analysis: satellite imagery embeddings, which capture visual and environmental patterns from overhead imagery, and population embeddings, which encode demographic and mobility information at high spatial resolutions. These embeddings promise to make geospatial machine learning more scalable, flexible, and transferable, but do they deliver? This talk will begin with an introduction to both embedding types, representation, and the types of spatial signals they capture. A short live demo will walk through two practical use cases: land use classification and estimating housing prices using these embeddings as inputs. These examples will illustrate the potential of embedding-based GeoAI to outperform traditional feature engineering. However, the talk will also highlight critical limitations: the opacity of learned representations, challenges in interpretability and validation, and the risk of reinforcing spatial and social biases. By the end, attendees will gain a clear understanding of both the capabilities and caveats of these embeddings, and when (or whether) they should be trusted in decision-making contexts."
+  },
+  {
+    "objectID": "index.html#type-of-embedding",
+    "href": "index.html#type-of-embedding",
+    "title": "Google Embeddings tutorial",
+    "section": "Type of Embedding",
+    "text": "Type of Embedding\n\nPDFM Embedding\nGoogle Earth Embedding\n\nCredit: - Dr. Qiusheng Wu PDFM tutorial - Dr. Qiusheng Wu Google Earth Embedding tutorial - Google official JavaScript Satellite Embedding tutorial - Google PDFM Embedding - Google Earth Satellite Embedding\nALL Exert or modify from original Repo, all rights reserved to the original author!"
+  },
+  {
+    "objectID": "index.html#population-dynamics-foundation-model-pdfm-embeddings",
+    "href": "index.html#population-dynamics-foundation-model-pdfm-embeddings",
+    "title": "Google Embeddings tutorial",
+    "section": "Population Dynamics Foundation Model (PDFM) Embeddings",
+    "text": "Population Dynamics Foundation Model (PDFM) Embeddings\nPDFM Embeddings are condensed vector representations designed to encapsulate the complex, multidimensional interactions among human behaviors, environmental factors, and local contexts at specific locations. These embeddings capture patterns in aggregated data such as search trends, busyness trends, and environmental conditions (maps, air quality, temperature), providing a rich, location-specific snapshot of how populations engage with their surroundings. Aggregated over space and time, these embeddings ensure privacy while enabling nuanced spatial analysis and prediction for applications ranging from public health to socioeconomic modeling."
+  },
+  {
+    "objectID": "index.html#application",
+    "href": "index.html#application",
+    "title": "Google Embeddings tutorial",
+    "section": "Application",
+    "text": "Application\nPDFM Embeddings can be applied to a wide range of geospatial prediction tasks, similar to census and socioeconomic statistics. Example use cases include:\n\nPopulation Health Outcomes: Predicting health statistics like disease prevalence or population health risks.\nSocioeconomic Factors: Modeling economic indicators and living conditions.\nRetail: Identifying promising locations for new stores, market expansion, and demand forecasting.\nMarketing and Sales: Characterizing high-performance regions and identifying similar areas to optimize marketing and sales efforts.\n\nBy incorporating spatial relationships and diverse feature types, these embeddings serve as a powerful tool for geospatial predictions."
+  },
+  {
+    "objectID": "pdfm/zillow_pdfm.html",
+    "href": "pdfm/zillow_pdfm.html",
+    "title": "Google Embeddings tutorial",
+    "section": "",
+    "text": "Code\nimport os\nimport pandas as pd\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.neighbors import KNeighborsRegressor\nfrom leafmap.common import evaluate_model, plot_actual_vs_predicted, download_file\n\n\n\n\nCode\nzhvi_file = \"/home/zyang91/Desktop/data/zillow_home_value_index_by_zipcode.csv\"\n\n\n\n\nCode\nzhvi_df = pd.read_csv(zhvi_file, dtype={\"RegionName\": str})\nzhvi_df.index = zhvi_df[\"RegionName\"].apply(lambda x: f\"zip/{x}\")\nzhvi_df\n\n\n\n\nCode\nembeddings_file = \"/home/zyang91/Desktop/us/zcta_embeddings.csv\"\n\n\n\n\nCode\nzipcode_embeddings = pd.read_csv(embeddings_file).set_index(\"place\")\nzipcode_embeddings\n\n\n\n\nCode\ndata = zhvi_df.join(zipcode_embeddings, how=\"inner\")\ndata\n\n\n\n\nCode\nembedding_features = [f\"feature{x}\" for x in range(330)]\nlabel = \"2024-10-31\"\n\n\n\n\nCode\ndata = data.dropna(subset=[label])\ndata\n\n\n\n\nCode\ndata = data[embedding_features + [label]]\nX = data[embedding_features]\ny = data[label]\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\n\n\n\nCode\n# Initialize and train a simple linear regression model\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)\n\n# Make predictions\ny_pred = model.predict(X_test)\n\n\n\n\nCode\nevaluation_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluation_df)\nprint(metrics)\n\n\n\n\nCode\nxy_lim = (0, 3_000_000)\nplot_actual_vs_predicted(\n    evaluation_df,\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=\"Actual vs Predicted Home Values\",\n    x_label=\"Actual Home Value\",\n    y_label=\"Predicted Home Value\",\n)\n\n\n\n\nCode\nevaluate_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluate_df)\nprint(metrics)\n\n\n\n\nCode\nevaluate_df.head()\n\n\n\n\nCode\nxy_lim = (0, 3000000)\nplot_actual_vs_predicted(\n    evaluate_df,\n    x_label=\"Actual\",\n    y_label=\"Predicted\",\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=\"Actual vs Predicted ZHVI\",\n)\n\n\n\n\nCode\nk = 5\nknn_model = KNeighborsRegressor(n_neighbors=k)\nknn_model.fit(X_train, y_train)\ny_pred = knn_model.predict(X_test)\n\n\n\n\nCode\nplot_actual_vs_predicted(\n    evaluate_df,\n    x_label=\"Actual\",\n    y_label=\"Predicted\",\n    xlim=xy_lim,\n    ylim=xy_lim,\n    title=f\"Actual vs Predicted ZHVI (KNN, k={k})\",\n)\n\n\n\n\nCode\nevaluation_df = pd.DataFrame({\"y\": y_test, \"y_pred\": y_pred})\nmetrics = evaluate_model(evaluation_df)\nprint(metrics)"
   },
   {
     "objectID": "satellite-embedding/demo2/landcover-classification.html",
@@ -271,5 +250,26 @@
     "title": "Unsupervised Classification with Satellite Embedding Dataset",
     "section": "9 References and acknowledgements",
     "text": "9 References and acknowledgements\n\nGoogle Earth Engine Satellite Embedding Tutorial by Ujaval Gandhi via official Google Earth Engine embedding tutorial: https://developers.google.com/earth-engine/tutorials/community/satellite-embedding-02-unsupervised-classification\nLeafmap package by Dr. Qiusheng Wu: https://leafmap.org/\ngeemap package by Dr. Qiusheng Wu: https://geemap.org/\nDr. Qiusheng Wu Google Satellite Embedding tutorial: https://www.youtube.com/watch?v=EGL7fXyA7-U\n\nThank you so much to Ujaval Gandhi and Dr. Qiusheng Wu for their amazing tutorials and open-source codes!"
+  },
+  {
+    "objectID": "satellite-embedding/regression.html",
+    "href": "satellite-embedding/regression.html",
+    "title": "Visulization",
+    "section": "",
+    "text": "Code\nimport geemap\nimport ee\nCode\nee.Authenticate()\nCode\nee.Initialize(project=\"ee-zhanchaoyang\")\nCode\nm = geemap.Map(center=(40, -100), zoom=4)\nm\nCode\ngeometry = ee.Geometry.Polygon(\n    [[74.322, 14.981], [74.322, 14.765], [74.648, 14.765], [74.648, 14.980]]\n)\nCode\nm.add_basemap(\"SATELLITE\")\nCode\nm.addLayer(geometry, {}, \"geometry\")\nm.centerObject(geometry)\nCode\nstartDate = ee.Date.fromYMD(2022, 1, 1)\nCode\nendDate = ee.Date.fromYMD(2023, 1, 1)\nCode\nembeddings = ee.ImageCollection(\"GOOGLE/SATELLITE_EMBEDDING/V1/ANNUAL\")\nCode\nembeddingsFiltered = embeddings.filter(ee.Filter.date(startDate, endDate)).filter(\n    ee.Filter.bounds(geometry)\n)\nCode\nembeddings_vis = embeddingsFiltered.median().clip(geometry)\nCode\nvis_params = {\n    \"bands\": [\"A00\", \"A01\", \"A02\"],\n    \"min\": -0.5,\n    \"max\": 0.5,\n}\nCode\nm.addLayer(embeddings_vis, vis_params, \"embeddings\")\nm"
+  },
+  {
+    "objectID": "satellite-embedding/regression.html#tasks-continue",
+    "href": "satellite-embedding/regression.html#tasks-continue",
+    "title": "Visulization",
+    "section": "Tasks continue",
+    "text": "Tasks continue\n\n\nCode\n# check the projections\nembeddingsProjection = ee.Image(embeddingsFiltered.first()).select(0).projection()\n\n\n\n\nCode\nembeddingsProjection\n\n\n\n\nCode\nembeddingsImage = embeddingsFiltered.mosaic().setDefaultProjection(embeddingsProjection)\n\n\n\n\nCode\ngedi = ee.ImageCollection(\"LARSE/GEDI/GEDI04_A_002_MONTHLY\")\n\n\n\n\nCode\ndef qualityMask(image):\n    mask = image.updateMask(image.select(\"l4_quality_flag\").eq(1)).updateMask(\n        image.select(\"degrade_flag\").eq(0)\n    )\n    return mask\n\n\n\n\nCode\ndef errorMask(image):\n    relative_se = image.select(\"agbd_se\").divide(image.select(\"agbd\"))\n    error_mask = image.updateMask(relative_se.lte(0.5))\n    return error_mask\n\n\n\n\nCode\ndef SlopeMask(image):\n    glo30 = ee.ImageCollection(\"COPERNICUS/DEM/GLO30\")\n    glo30Filtered = glo30.filter(ee.Filter.bounds(geometry)).select(\"DEM\")\n    demProj = glo30Filtered.first().select(0).projection()\n    elevation = glo30Filtered.mosaic().rename(\"dem\").setDefaultProjection(demProj)\n    slope = ee.Terrain.slope(elevation)\n    slope_mask = image.updateMask(slope.lte(30))\n    return slope_mask\n\n\n\n\nCode\ngediFiltered = gedi.filter(ee.Filter.date(startDate, endDate)).filter(\n    ee.Filter.bounds(geometry)\n)\n\n\n\n\nCode\ngediProjection = ee.Image(gediFiltered.first()).select(\"agbd\").projection()\n\n\n\n\nCode\ngedi_processed = gediFiltered.map(qualityMask).map(errorMask).map(SlopeMask)\n\n\n\n\nCode\ngediMosaic = gedi_processed.mosaic().select(\"agbd\").setDefaultProjection(gediProjection)\n\n\n\n\nCode\ngediVis = {\n    min: 0,\n    max: 200,\n    \"palette\": [\"#edf8fb\", \"#b2e2e2\", \"#66c2a4\", \"#2ca25f\", \"#006d2c\"],\n    \"bands\": [\"agbd\"],\n}\n\n\n\n\nCode\nm.addLayer(gedi_processed, gediVis, \"gedi\")\nm\n\n\n\n\nCode\ngridScale = 100\n\n\n\n\nCode\ngridProjection = ee.Projection(\"EPSG:3857\").atScale(gridScale)\n\n\n\n\nCode\nstacked = embeddingsImage.addBands(gediMosaic)\n\n\n\n\nCode\nstacked = stacked.resample(\"bilinear\")\n\n\n\n\nCode\nstackedResampled = stacked.reduceResolution(\n    reducer=ee.Reducer.mean(), maxPixels=1024\n).reproject(crs=gridProjection)\n\n\n\n\nCode\nstackedResampled = stackedResampled.updateMask(stackedResampled.mask().gt(0))\n\n\n\n\nCode\nexport_image = stackedResampled.clip(geometry)\n\n\n\n\nCode\ngeemap.ee_export_image_to_drive(\n    export_image,\n    description=\"GEDI_Mosaic_Export\",\n    folder=\"EarthEngine\",  # Change to your Google Drive folder\n    fileNamePrefix=\"gedi_mosaic\",  # No \".tif\" extension\n    scale=gridScale,\n    region=geometry,\n    maxPixels=1e10,\n)\n\n\n\n\nCode\npredictors = embeddingsImage.bandNames()\n\n\n\n\nCode\npredicted = gediMosaic.bandNames().get(0)\n\n\n\n\nCode\nprint(\"predictors\", predictors.getInfo())\n\n\n\n\nCode\nprint(\"predicted\", predicted.getInfo())\n\n\n\n\nCode\npredictorImage = stackedResampled.select(predictors)\n\n\n\n\nCode\npredictedImage = stackedResampled.select([predicted])\n\n\n\n\nCode\nclassMask = predictedImage.mask().toInt().rename(\"class\")\n\n\n\n\nCode\nnumSamples = 1000\n\n\n\n\nCode\ntraining = stackedResampled.addBands(classMask).stratifiedSample(\n    numPoints=numSamples,\n    classBand=\"class\",\n    region=geometry,\n    scale=gridScale,\n    classValues=[0, 1],\n    classPoints=[0, numSamples],\n    dropNulls=True,\n    tileScale=16,\n)\n\n\n\n\nCode\nmodel = (\n    ee.Classifier.smileRandomForest(50)\n    .setOutputMode(\"REGRESSION\")\n    .train(features=training, classProperty=predicted, inputProperties=predictors)\n)\n\n\n\n\nCode\npredicted = training.classify(classifier=model, outputName=\"agbd_predicted\")\n\n\n\n\nCode\ndef calculatermse(inputs):\n    observed = ee.Array(inputs.aggregate_array(\"agbd\"))\n    predicted = ee.Array(inputs.aggregate_array(\"agbd_predicted\"))\n    rmse = (\n        observed.subtract(predicted)\n        .pow(2)\n        .reduce(ee.Reducer.mean(), [0])\n        .sqrt()\n        .get([0])\n    )\n    return rmse\n\n\n\n\nCode\nrmse = calculatermse(predicted)\nprint(\"RMSE\", rmse.getInfo())"
+  },
+  {
+    "objectID": "satellite-embedding/regression.html#plot",
+    "href": "satellite-embedding/regression.html#plot",
+    "title": "Visulization",
+    "section": "Plot",
+    "text": "Plot\n\n\nCode\nimport numpy as np\nimport pandas as pd\nimport matplotlib.pyplot as plt"
   }
 ]

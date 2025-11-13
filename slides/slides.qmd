@@ -153,6 +153,7 @@ editor: visual
 :::::
 
 ## What Satellite Embeddings Capture?
+
 ::::: columns
 ::: {.column width="50%"}
 -   Land cover patterns
@@ -200,12 +201,14 @@ editor: visual
 :::
 
 ::: {.column width="50%"}
-![](images/satellite-app.png)
+![](images/satellite-app.png){height=500px}
 :::
 :::::
 
 ## Demo 2: Satellite Embeddings for Land Cover Classification
 
+::::: columns
+::: {.column width="60%"}
 **Approach:**
 
 -   Use embeddings as features
@@ -217,6 +220,12 @@ editor: visual
 -   No need to process raw imagery
 -   Pre-trained representations
 -   Faster than traditional methods
+:::
+
+::: {.column width="40%"}
+![](images/geemap.png)
+:::
+:::::
 
 ## Workflow
 
@@ -251,11 +260,11 @@ editor: visual
 ## Summary and Conclusions
 
 ::::: columns
-::: {.column width="50%"}
+::: {.column width="60%"}
 **The Promise:**
 
 -   Powerful tools for spatial analysis
--   Capture complex patterns (Privacy concerns)
+-   Capture complex patterns
 
 **The Reality:**
 
@@ -268,16 +277,27 @@ editor: visual
 -   Be aware of limitations and biases
 :::
 
-::: {.column width="50%"}
+::: {.column width="40%"}
+<br>
+<br>
+<br>
 ![](images/blackBox.png)
 :::
 :::::
 
-## Final Verdict
+## Final Verdict 
 
-[Powerful GeoAI tools, but use with caution and critical thinking!]{style="font-size: 1.1em; font-weight: bold;"}
+<br>
+<br>
+<div style="font-size: 1.3em; font-weight: bold; margin-bottom: 1.2em;">
+  Powerful GeoAI tools, but use with caution and critical thinking!
+</div>
 
-[All models are false, but some are useful]{style="font-size: 1.1em; font-weight: bold;"}
+<div style="font-size: 1.3em; font-weight: bold; font-style: italic;
+            border-top: 2px solid #ccc; padding-top: 1.0em;">
+  “All models are false, but some are useful”
+</div>
+
 
 ## References
 

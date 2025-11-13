@@ -6,8 +6,8 @@
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.33">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-1fe81d0376b2c50856e68e651e390326.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.23">
 
   <meta name="author" content="Zhanchao Yang">
   <title>Google Embeddings tutorial – Satellite and Population Embedding</title>
@@ -25,11 +25,11 @@
     ul.task-list{list-style: none;}
     ul.task-list li input[type="checkbox"] {
       width: 0.8em;
-      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-851112658806acf7ad3e4e5bec867156.css">
+  <link rel="stylesheet" href="../site_libs/revealjs/dist/theme/quarto-9d1867e81adb192d35d2d3337a9e0b78.css">
   <link href="../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -59,12 +59,12 @@
     }
     .reveal .footnotes ol {
       counter-reset: ol;
-      list-style-type: none;
+      list-style-type: none; 
       margin-left: 0;
     }
     .reveal .footnotes ol li:before {
       counter-increment: ol;
-      content: counter(ol) ". ";
+      content: counter(ol) ". "; 
     }
     .reveal .footnotes ol li > p:first-child {
       display: inline-block;
@@ -106,19 +106,19 @@
     .reveal .slide > img.r-stretch.quarto-figure-center {
       display: block;
       margin-left: auto;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-left,
     .reveal .slide > img.r-stretch.quarto-figure-left  {
       display: block;
       margin-left: 0;
-      margin-right: auto;
+      margin-right: auto; 
     }
     .reveal .slide > img.stretch.quarto-figure-right,
     .reveal .slide > img.r-stretch.quarto-figure-right  {
       display: block;
       margin-left: auto;
-      margin-right: 0;
+      margin-right: 0; 
     }
   </style>
 </head>
@@ -133,7 +133,7 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Zhanchao Yang
+Zhanchao Yang 
 </div>
 <div class="quarto-title-author-email">
 <a href="mailto:zhanchao@upenn.edu">zhanchao@upenn.edu</a>
@@ -263,16 +263,23 @@ Zhanchao Yang
 </section>
 <section id="satellite-foundation-model-sfm-embeddings" class="slide level2">
 <h2>Satellite Foundation Model (SFM) Embeddings</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
 <li>Developed by Google Research</li>
 <li>Based on Sentinel-2 satellite imagery</li>
 <li><strong>Global coverage</strong> (2017-2023)</li>
 <li>Spatial resolution: 10 meters</li>
-<li>Available through Google Earth Engine</li>
+<li>Available through Google Earth Engine (GEE)</li>
 </ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="images/satellite.gif"></p>
+</div></div>
 </section>
 <section id="what-satellite-embeddings-capture" class="slide level2">
 <h2>What Satellite Embeddings Capture?</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
 <li>Land cover patterns</li>
 <li>Vegetation characteristics</li>
@@ -281,6 +288,9 @@ Zhanchao Yang
 <li>Temporal dynamics</li>
 </ul>
 <p><span style="font-size: 0.9em;">Trained on massive satellite imagery corpus using self-supervised learning</span></p>
+</div><div class="column" style="width:50%;">
+<p><img data-src="images/headline_aef.png"></p>
+</div></div>
 </section>
 <section id="satellite-embeddings-with-google-earth-engine-gee" class="slide level2">
 <h2>Satellite Embeddings with Google Earth Engine (GEE)</h2>
@@ -299,23 +309,27 @@ Zhanchao Yang
 </section>
 <section id="applications-of-sfm-embeddings" class="slide level2">
 <h2>Applications of SFM Embeddings</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <p><strong>Environmental and Land Use Planning</strong></p>
 <ul>
 <li>Urban sprawl analysis</li>
 <li>Land cover classification</li>
-<li>Change detection</li>
-<li>Development planning</li>
 </ul>
 <p><strong>Temporal Analysis:</strong></p>
 <ul>
 <li>Seasonal pattern detection</li>
-<li>Long-term trend analysis</li>
-<li>Before/after comparisons</li>
+<li>Change Detection</li>
 <li>Similarity searches across time</li>
 </ul>
+</div><div class="column" style="width:50%;">
+<p><img data-src="images/satellite-app.png" height="500"></p>
+</div></div>
 </section>
 <section id="demo-2-satellite-embeddings-for-land-cover-classification" class="slide level2">
 <h2>Demo 2: Satellite Embeddings for Land Cover Classification</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
 <p><strong>Approach:</strong></p>
 <ul>
 <li>Use embeddings as features</li>
@@ -328,6 +342,9 @@ Zhanchao Yang
 <li>Pre-trained representations</li>
 <li>Faster than traditional methods</li>
 </ul>
+</div><div class="column" style="width:40%;">
+<p><img data-src="images/geemap.png"></p>
+</div></div>
 </section>
 <section id="workflow" class="slide level2">
 <h2>Workflow</h2>
@@ -362,10 +379,12 @@ Zhanchao Yang
 </section>
 <section id="summary-and-conclusions" class="slide level2">
 <h2>Summary and Conclusions</h2>
+<div class="columns">
+<div class="column" style="width:60%;">
 <p><strong>The Promise:</strong></p>
 <ul>
 <li>Powerful tools for spatial analysis</li>
-<li>Capture complex patterns (Privacy concerns)</li>
+<li>Capture complex patterns</li>
 </ul>
 <p><strong>The Reality:</strong></p>
 <ul>
@@ -377,10 +396,20 @@ Zhanchao Yang
 <li>Validate predictions thoroughly</li>
 <li>Be aware of limitations and biases</li>
 </ul>
+</div><div class="column" style="width:40%;">
+<p><br> <br> <br> <img data-src="images/blackBox.png"></p>
+</div></div>
 </section>
 <section id="final-verdict" class="slide level2">
 <h2>Final Verdict</h2>
-<p><span style="font-size: 1.1em; font-weight: bold;">Powerful GeoAI tools, but use with caution and critical thinking!</span></p>
+<br> <br>
+<div style="font-size: 1.3em; font-weight: bold; margin-bottom: 1.2em;">
+<p>Powerful GeoAI tools, but use with caution and critical thinking!</p>
+</div>
+<div style="font-size: 1.3em; font-weight: bold; font-style: italic;
+            border-top: 2px solid #ccc; padding-top: 1.0em;">
+<p>“All models are false, but some are useful”</p>
+</div>
 </section>
 <section id="references" class="slide level2">
 <h2>References</h2>
@@ -420,7 +449,7 @@ Zhanchao Yang
   <script src="../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
   <script src="../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
   <script src="../site_libs/revealjs/plugin/quarto-support/support.js"></script>
-
+  
 
   <script src="../site_libs/revealjs/plugin/notes/notes.js"></script>
   <script src="../site_libs/revealjs/plugin/search/search.js"></script>
@@ -442,7 +471,7 @@ Zhanchao Yang
 'jumpToSlide': true,
 'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
 'smaller': false,
-
+ 
         // Display controls in the bottom right corner
         controls: false,
 
@@ -594,7 +623,7 @@ Zhanchao Yang
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -628,7 +657,7 @@ Zhanchao Yang
         });
         const isCodeAnnotation = (el) => {
           for (const clz of el.classList) {
-            if (clz.startsWith('code-annotation-')) {
+            if (clz.startsWith('code-annotation-')) {                     
               return true;
             }
           }
@@ -648,11 +677,11 @@ Zhanchao Yang
             button.setAttribute("data-bs-toggle", "tooltip");
             button.setAttribute("data-bs-placement", "left");
             button.setAttribute("data-bs-title", "Copied!");
-            tooltip = new bootstrap.Tooltip(button,
-              { trigger: "manual",
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
                 customClass: "code-copy-button-tooltip",
                 offset: [0, -8]});
-            tooltip.show();
+            tooltip.show();    
           }
           setTimeout(function() {
             if (tooltip) {
@@ -668,13 +697,14 @@ Zhanchao Yang
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
@@ -730,7 +760,7 @@ Zhanchao Yang
           }
             config['offset'] = [0,0];
             config['maxWidth'] = 700;
-          window.tippy(el, config);
+          window.tippy(el, config); 
         }
         const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
         for (var i=0; i<noterefs.length; i++) {
@@ -787,6 +817,6 @@ Zhanchao Yang
         }
       });
       </script>
-
+    
 
 </body></html>
