@@ -399,7 +399,7 @@ ridge_results <- data.frame(
   )
 )
 
-kable(ridge_results, 
+kable(ridge_results,
       caption = "Ridge Regression Performance Metrics",
       col.names = c("Metric", "Value")) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
@@ -447,7 +447,7 @@ lasso_results <- data.frame(
   )
 )
 
-kable(lasso_results, 
+kable(lasso_results,
       caption = "Lasso Regression Performance Metrics",
       col.names = c("Metric", "Value")) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
@@ -492,7 +492,7 @@ model_comparison <- data.frame(
   )
 )
 
-kable(model_comparison, 
+kable(model_comparison,
       caption = "Comparison of Regression Models",
       col.names = c("Model", "MAE", "RMSE", "R²", "Features Used")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
