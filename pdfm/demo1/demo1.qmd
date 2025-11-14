@@ -9,7 +9,7 @@ format:
     code-fold: show
     code-tools: true
 execute:
-  eval: false
+  eval: true
   warning: false
   message: false
 ---
@@ -329,11 +329,21 @@ y_test <- test_data$X2024.10.31
 lr_mae <- mae(y_test, y_pred_lr)
 lr_rmse <- rmse(y_test, y_pred_lr)
 lr_r2 <- cor(y_test, y_pred_lr)^2
+# Display results
+lr_results <- data.frame(
+  Metric = c("MAE", "RMSE", "R²"),
+  Value = c(
+    round(lr_mae, 2),
+    round(lr_rmse, 2),
+    round(lr_r2, 4)
+  )
+)
+kable(lr_results,
+      caption = "Linear Regression Performance Metrics",
+      col.names = c("Metric", "Value")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-MAE: 42972.12
-RMSE: 59355.71
-R²: 0.8564
 
 **Linear Regression Interpretation:**
 
@@ -640,8 +650,90 @@ prediction_comparison <- data.frame(
 
 ### Map Prediction Errors
 
+**Linear Regression Errors:**
+```{r}
+#| label: map-lr-errors
+#| warning: false   # hide warnings
+# Join prediction differences with county geometries
+error_map_data_lr <- county_gdf %>%
+  inner_join(prediction_comparison, by = "place")
+# Create color palette for differences (red = underestimate, blue = overestimate)
+pal_diff_lr <- colorNumeric(
+  palette = c("blue", "white", "red"),
+  domain = c(-200000, 200000),
+  na.color = "gray"
+)
+# Create interactive map showing Linear regression errors
+leaflet(error_map_data_lr) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal_diff_lr(diff_lr),
+    fillOpacity = 0.7,
+    color = "white",
+    weight = 1,
+    popup = ~paste0(
+      "<strong>County</strong><br>",
+      "Actual: $", format(round(actual), big.mark = ","), "<br>",
+      "Predicted (Linear): $", format(round(pred_lr), big.mark = ","), "<br>",
+      "Difference: $", format(round(diff_lr), big.mark = ",")
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = pal_diff_lr,
+    values = ~diff_lr,
+    title = "Prediction Error<br>(Linear Model)",
+    opacity = 1,
+    labFormat = labelFormat(prefix = "$")
+  )
+```
+
+
+
+**Ridge Regression Errors:**
+```{r}
+#| label: map-ridge-errors
+#| warning: false   # hide warnings
+#| message: false
+
+# Join prediction differences with county geometries
+error_map_data_ridge <- county_gdf %>%
+  inner_join(prediction_comparison, by = "place")
+# Create color palette for differences (red = underestimate, blue = overestimate)
+pal_diff_ridge <- colorNumeric(
+  palette = c("blue", "white", "red"),
+  domain = c(-200000, 200000),
+  na.color = "gray"
+)
+# Create interactive map showing Ridge regression errors
+leaflet(error_map_data_ridge) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal_diff_ridge(diff_ridge),
+    fillOpacity = 0.7,
+    color = "white",
+    weight = 1,
+    popup = ~paste0(
+      "<strong>County</strong><br>",
+      "Actual: $", format(round(actual), big.mark = ","), "<br>",
+      "Predicted (Ridge): $", format(round(pred_ridge), big.mark = ","), "<br>",
+      "Difference: $", format(round(diff_ridge), big.mark = ",")
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = pal_diff_ridge,
+    values = ~diff_ridge,
+    title = "Prediction Error<br>(Ridge Model)",
+    opacity = 1,
+    labFormat = labelFormat(prefix = "$")
+  )
+```
+
+**Lasso Regression Errors:**
 ```{r}
 #| label: map-errors
+#| warning: false   # hide warnings
 
 # Join prediction differences with county geometries
 error_map_data <- county_gdf %>%
@@ -723,8 +815,6 @@ leaflet(error_map_data) %>%
 
 - Black-box nature makes interpretation challenging
 - Embeddings may encode biases from training data
-- Computational requirements for high-dimensional data
-- Model may not capture hyperlocal market dynamics
 
 ### Future Directions
 
