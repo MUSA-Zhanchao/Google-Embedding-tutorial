@@ -1,6 +1,6 @@
 ---
 title: "Zillow Home Value Index Analysis with PDFM Embeddings"
-subtitle: "Linear Regression vs. Stepwise Regression Comparison"
+subtitle: "Comparing Linear, Ridge, and Lasso Regression Models"
 author: "Zhanchao Yang"
 format:
   html:
@@ -24,16 +24,28 @@ This document demonstrates the application of **Population Dynamics Foundation M
 2. **Join** PDFM embeddings with home value data
 3. **Build regression models** to predict home values:
    - Linear Regression (baseline)
-   - Stepwise Regression (comparison)
+   - Ridge Regression (L2 regularization)
+   - Lasso Regression (L1 regularization with feature selection)
 4. **Evaluate and visualize** model performance
 
-### Why Stepwise Regression?
+### Why Ridge and Lasso Regression?
 
-Stepwise regression is particularly useful when working with high-dimensional embeddings (330 features) because it:
+Ridge and Lasso regression are particularly useful when working with high-dimensional embeddings (330 features) because they:
 
-- Automatically selects the most predictive features
-- Reduces model complexity and prevents overfitting
-- Can potentially improve prediction accuracy compared to using all features
+- **Ridge Regression (L2)**:
+  - Penalizes large coefficients to prevent overfitting
+  - Keeps all features but shrinks their impact
+  - Performs well when many features contribute to the outcome
+
+- **Lasso Regression (L1)**:
+  - Performs automatic feature selection by shrinking some coefficients to zero
+  - Identifies the most important embedding dimensions
+  - Produces sparse models that are easier to interpret
+
+- **Both**:
+  - Use cross-validation to optimize the regularization parameter (lambda)
+  - More computationally efficient than stepwise regression
+  - Provide better generalization on unseen data
 
 
 ## Setup and Data Loading
@@ -58,10 +70,15 @@ library(leaflet)
 # Machine learning and modeling
 library(caret)
 library(MASS)  # For stepwise regression
+library(glmnet)  # For Ridge and Lasso regression
 
 # Model evaluation
 library(Metrics)
 library(ggplot2)
+
+# For table formatting
+library(knitr)
+library(kableExtra)
 
 # Set random seed for reproducibility
 set.seed(42)
@@ -348,30 +365,147 @@ R²: 0.8564
 - Not possible (it will compute over 54000 models, roughly takes around 6-7 days to finish)
 
 
-## Model 3: Ridged Regression
+## Model 3: Ridge Regression
 ```{r}
+#| label: ridge-regression
 
+# Prepare matrix format for glmnet (Ridge regression requires matrix input)
+x_train <- as.matrix(train_data %>% dplyr::select(-target))
+y_train <- train_data$target
+x_test <- as.matrix(test_data %>% dplyr::select(-index, -X2024.10.31))
+
+# Perform cross-validation to find optimal lambda
+cv_ridge <- cv.glmnet(x_train, y_train, alpha = 0, nfolds = 10)
+
+# Fit Ridge regression model with optimal lambda
+ridge_model <- glmnet(x_train, y_train, alpha = 0, lambda = cv_ridge$lambda.min)
+
+# Make predictions on test set
+y_pred_ridge <- predict(ridge_model, newx = x_test, s = cv_ridge$lambda.min)
+
+# Calculate evaluation metrics
+ridge_mae <- mae(y_test, y_pred_ridge)
+ridge_rmse <- rmse(y_test, y_pred_ridge)
+ridge_r2 <- cor(y_test, y_pred_ridge)^2
+
+# Display results
+ridge_results <- data.frame(
+  Metric = c("MAE", "RMSE", "R²", "Optimal Lambda"),
+  Value = c(
+    round(ridge_mae, 2),
+    round(ridge_rmse, 2),
+    round(ridge_r2, 4),
+    round(cv_ridge$lambda.min, 4)
+  )
+)
+
+kable(ridge_results, 
+      caption = "Ridge Regression Performance Metrics",
+      col.names = c("Metric", "Value")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+**Ridge Regression Interpretation:**
+
+- Uses L2 regularization to penalize large coefficients
+- Shrinks coefficients but keeps all 330 features (does not perform feature selection)
+- Lambda parameter controls the amount of regularization
+- Cross-validation used to find optimal lambda value
+- Helps prevent overfitting compared to standard linear regression
 
 ## Model 4: Lasso Regression
 ```{r}
+#| label: lasso-regression
 
+# Perform cross-validation to find optimal lambda for Lasso
+cv_lasso <- cv.glmnet(x_train, y_train, alpha = 1, nfolds = 10)
+
+# Fit Lasso regression model with optimal lambda
+lasso_model <- glmnet(x_train, y_train, alpha = 1, lambda = cv_lasso$lambda.min)
+
+# Make predictions on test set
+y_pred_lasso <- predict(lasso_model, newx = x_test, s = cv_lasso$lambda.min)
+
+# Calculate evaluation metrics
+lasso_mae <- mae(y_test, y_pred_lasso)
+lasso_rmse <- rmse(y_test, y_pred_lasso)
+lasso_r2 <- cor(y_test, y_pred_lasso)^2
+
+# Count number of non-zero coefficients (features selected)
+lasso_coefs <- coef(lasso_model, s = cv_lasso$lambda.min)
+n_features_selected <- sum(lasso_coefs != 0) - 1  # Subtract 1 for intercept
+
+# Display results
+lasso_results <- data.frame(
+  Metric = c("MAE", "RMSE", "R²", "Optimal Lambda", "Features Selected"),
+  Value = c(
+    round(lasso_mae, 2),
+    round(lasso_rmse, 2),
+    round(lasso_r2, 4),
+    round(cv_lasso$lambda.min, 4),
+    n_features_selected
+  )
+)
+
+kable(lasso_results, 
+      caption = "Lasso Regression Performance Metrics",
+      col.names = c("Metric", "Value")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+**Lasso Regression Interpretation:**
+
+- Uses L1 regularization to penalize large coefficients
+- Performs automatic feature selection by shrinking some coefficients to exactly zero
+- Lambda parameter controls the amount of regularization
+- Cross-validation used to find optimal lambda value
+- Results in a sparse model with fewer features than Ridge regression
+- Helps identify the most important embedding dimensions for prediction
 
 ### Model Comparison
 
 ```{r}
 #| label: model-comparison
-#| eval: false
 
+# Create comparison dataframe with all models
+model_comparison <- data.frame(
+  Model = c("Linear Regression", "Ridge Regression", "Lasso Regression"),
+  MAE = c(
+    round(lr_mae, 2),
+    round(ridge_mae, 2),
+    round(lasso_mae, 2)
+  ),
+  RMSE = c(
+    round(lr_rmse, 2),
+    round(ridge_rmse, 2),
+    round(lasso_rmse, 2)
+  ),
+  R_squared = c(
+    round(lr_r2, 4),
+    round(ridge_r2, 4),
+    round(lasso_r2, 4)
+  ),
+  Features_Used = c(
+    330,
+    330,
+    n_features_selected
+  )
+)
 
+kable(model_comparison, 
+      caption = "Comparison of Regression Models",
+      col.names = c("Model", "MAE", "RMSE", "R²", "Features Used")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) %>%
+  row_spec(which.min(model_comparison$RMSE), bold = TRUE, color = "white", background = "#4CAF50")
 ```
 
 **Key Insights:**
 
 - Compare which model performs better on unseen data
-- Stepwise regression uses fewer features while potentially maintaining or improving accuracy
+- Ridge regression uses all features but with regularization to prevent overfitting
+- Lasso regression performs feature selection, using fewer features while maintaining accuracy
 - Feature reduction can lead to better interpretability and faster predictions
+- The best performing model (lowest RMSE) is highlighted in green
 
 ## Visualization of Model Performance
 
@@ -406,13 +540,35 @@ ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
   scale_y_continuous(labels = scales::comma)
 ```
 
-### Actual vs. Predicted Plot - Ridged Regression
+### Actual vs. Predicted Plot - Ridge Regression
 
 ```{r}
-#| label: plot-stepwise
-#| eval: false
+#| label: plot-ridge
 
+# Create evaluation dataframe for Ridge regression
+eval_df_ridge <- data.frame(
+  actual = y_test,
+  predicted = as.vector(y_pred_ridge)
+)
 
+# Plot
+ggplot(eval_df_ridge, aes(x = actual, y = predicted)) +
+  geom_point(alpha = 0.5, color = "darkgreen") +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  coord_fixed(xlim = c(0, 1000000), ylim = c(0, 1000000)) +
+  labs(
+    title = "Ridge Regression: Actual vs Predicted",
+    subtitle = paste0("R² = ", round(ridge_r2, 4)),
+    x = "Actual Home Value ($)",
+    y = "Predicted Home Value ($)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5)
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
 ```
 
 **Interpretation of Scatter Plots:**
@@ -422,10 +578,35 @@ ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
 - Points below the line = model underestimates home value
 - Tighter clustering around the diagonal = better model performance
 
-### Actual vs. Predicted Comparison Plot - Lasso Regression
+### Actual vs. Predicted Plot - Lasso Regression
 
 ```{r}
+#| label: plot-lasso
 
+# Create evaluation dataframe for Lasso regression
+eval_df_lasso <- data.frame(
+  actual = y_test,
+  predicted = as.vector(y_pred_lasso)
+)
+
+# Plot
+ggplot(eval_df_lasso, aes(x = actual, y = predicted)) +
+  geom_point(alpha = 0.5, color = "darkorange") +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  coord_fixed(xlim = c(0, 1000000), ylim = c(0, 1000000)) +
+  labs(
+    title = "Lasso Regression: Actual vs Predicted",
+    subtitle = paste0("R² = ", round(lasso_r2, 4), " | Features: ", n_features_selected, "/330"),
+    x = "Actual Home Value ($)",
+    y = "Predicted Home Value ($)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5)
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
 ```
 
 ## Spatial Visualization of Prediction Errors
@@ -434,8 +615,27 @@ ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
 
 ```{r}
 #| label: calc-differences
-#| eval: false
 
+# Add test data indices back to identify counties
+test_data_with_place <- modeling_data[-train_indices, ] %>%
+  mutate(row_idx = row_number())
+
+# Get the original place identifiers for test data
+test_places <- data[test_data$index, "place"]
+
+# Create comparison dataframe
+prediction_comparison <- data.frame(
+  place = test_places,
+  actual = y_test,
+  pred_lr = y_pred_lr,
+  pred_ridge = as.vector(y_pred_ridge),
+  pred_lasso = as.vector(y_pred_lasso)
+) %>%
+  mutate(
+    diff_lr = pred_lr - actual,
+    diff_ridge = pred_ridge - actual,
+    diff_lasso = pred_lasso - actual
+  )
 ```
 
 ### Map Prediction Errors
@@ -443,7 +643,40 @@ ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
 ```{r}
 #| label: map-errors
 
+# Join prediction differences with county geometries
+error_map_data <- county_gdf %>%
+  inner_join(prediction_comparison, by = "place")
 
+# Create color palette for differences (red = underestimate, blue = overestimate)
+pal_diff <- colorNumeric(
+  palette = c("blue", "white", "red"),
+  domain = c(-200000, 200000),
+  na.color = "gray"
+)
+
+# Create interactive map showing Lasso regression errors
+leaflet(error_map_data) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal_diff(diff_lasso),
+    fillOpacity = 0.7,
+    color = "white",
+    weight = 1,
+    popup = ~paste0(
+      "<strong>County</strong><br>",
+      "Actual: $", format(round(actual), big.mark = ","), "<br>",
+      "Predicted (Lasso): $", format(round(pred_lasso), big.mark = ","), "<br>",
+      "Difference: $", format(round(diff_lasso), big.mark = ",")
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = pal_diff,
+    values = ~diff_lasso,
+    title = "Prediction Error<br>(Lasso Model)",
+    opacity = 1,
+    labFormat = labelFormat(prefix = "$")
+  )
 ```
 
 **Spatial Error Analysis:**
@@ -462,13 +695,15 @@ ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
 
 2. **Model Performance**:
    - Linear regression provides a straightforward baseline using all features
-   - Stepwise regression offers automatic feature selection and potentially improved generalization
+   - Ridge regression uses L2 regularization to reduce overfitting while keeping all features
+   - Lasso regression performs automatic feature selection through L1 regularization
 
-3. **Feature Selection Benefits**:
-   - Reduced model complexity
-   - Identification of most important embedding dimensions
-   - Potential reduction in overfitting
-   - Faster prediction times in production
+3. **Regularization Benefits**:
+   - Reduced overfitting compared to standard linear regression
+   - Ridge: Shrinks coefficients but maintains all 330 features
+   - Lasso: Identifies most important embedding dimensions through feature selection
+   - Cross-validation ensures optimal regularization strength (lambda)
+   - Improved generalization to unseen data
 
 4. **Spatial Patterns**: Error maps reveal geographic variations in prediction accuracy, suggesting opportunities for:
    - Regional model calibration
@@ -495,6 +730,8 @@ ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
 
 1. **Advanced Models**: Try ensemble methods (Random Forest, XGBoost) or neural networks
 2. **Feature Engineering**: Combine embeddings with traditional features (square footage, bedrooms, etc.)
+3. **Elastic Net**: Combine Ridge and Lasso (alpha between 0 and 1) for balanced regularization
+4. **Time Series Analysis**: Leverage temporal patterns in ZHVI data for forecasting
 
 ## References
 
