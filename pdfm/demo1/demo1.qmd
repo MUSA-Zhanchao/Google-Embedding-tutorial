@@ -1,0 +1,645 @@
+---
+title: "Zillow Home Value Index Analysis with PDFM Embeddings"
+subtitle: "Linear Regression vs. Stepwise Regression Comparison"
+author: "Zhanchao Yang"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-fold: show
+    code-tools: true
+execute:
+  eval: false
+  warning: false
+  message: false
+---
+
+## Introduction
+
+This document demonstrates the application of **Population Dynamics Foundation Model (PDFM)** embeddings to predict Zillow Home Value Index (ZHVI) data. PDFM embeddings are 330-dimensional vector representations that capture complex spatial and demographic patterns.
+
+### Objectives
+
+1. **Load and visualize** Zillow Home Value Index data with geospatial mapping
+2. **Join** PDFM embeddings with home value data
+3. **Build regression models** to predict home values:
+   - Linear Regression (baseline)
+   - Stepwise Regression (comparison)
+4. **Evaluate and visualize** model performance
+
+### Why Stepwise Regression?
+
+Stepwise regression is particularly useful when working with high-dimensional embeddings (330 features) because it:
+
+- Automatically selects the most predictive features
+- Reduces model complexity and prevents overfitting
+- Can potentially improve prediction accuracy compared to using all features
+
+
+## Setup and Data Loading
+
+### Load Required Libraries
+
+```{r}
+#| label: setup
+#| eval: false
+#| echo: false      # hide code
+#| warning: false   # hide warnings
+#| message: false   # hide messages
+#| include: true
+
+# Data manipulation and analysis
+library(tidyverse)
+library(readr)
+
+# Geospatial data handling
+library(sf)
+library(leaflet)
+
+# Machine learning and modeling
+library(caret)
+library(MASS)  # For stepwise regression
+
+# Model evaluation
+library(Metrics)
+library(ggplot2)
+
+# Set random seed for reproducibility
+set.seed(42)
+```
+
+### Download Zillow Home Value Index Data
+
+```{r}
+#| label: download-zhvi
+#| warning: false   # hide warnings
+#| message: false
+
+# Download ZHVI data
+zhvi <- read.csv("https://github.com/opengeos/datasets/releases/download/us/zillow_home_value_index_by_county.csv")
+
+```
+
+### Load and Prepare ZHVI Data
+
+```{r}
+#| label: load-zhvi
+
+# constuct correct State FIPS code and Municipal FIPS code with leading zeros
+zhvi_df <- zhvi %>%
+  mutate(
+    StateCodeFIP = str_pad(as.character(StateCodeFIPS), width = 2, side = "left", pad = "0"),
+    MunicipalCodeFIP = str_pad(as.character(MunicipalCodeFIPS), width = 3, side = "left", pad = "0")
+  )
+# Create place identifier
+zhvi_df <- zhvi_df %>%
+  mutate(
+    place = paste0("geoId/", StateCodeFIP, MunicipalCodeFIP)
+  )
+```
+
+**Note:** The `place` column creates a unique identifier for each county by combining state and municipal FIPS codes, which will be used to join with geospatial and embedding data.
+
+## Geospatial Data Integration
+
+### Load County Geometries
+
+```{r}
+#| label: load-county-geojson
+#| warning: false   # hide warnings
+#| message: false
+
+
+county_gdf <- st_read("https://github.com/zyang91/Google-Embedding-tutorial/releases/download/v2.0.0/county.geojson",quiet=TRUE)
+
+couty_gdf <- county_gdf %>%
+  dplyr::select(place)
+```
+
+### Join ZHVI with County Geometries
+
+```{r}
+#| label: join-zhvi-county
+
+zhvi_county_gdf<- county_gdf %>%
+  inner_join(
+    zhvi_df,
+    by = c("place" = "place")
+  )
+```
+
+## Visualizing Home Values
+
+### Prepare Data for Visualization
+
+```{r}
+#| label: prepare-viz-data
+
+# Select specific date column for visualization
+target_date <- "X2024.10.31"
+viz_gdf <- zhvi_county_gdf %>%
+  dplyr::select(RegionName, State, all_of(target_date), geometry)
+```
+
+### Create 2D Choropleth Map
+
+```{r}
+#| label: map-2d
+
+# Create interactive map with Leaflet
+pal <- colorNumeric(
+  palette = "Blues",
+  domain = viz_gdf[[target_date]],
+  na.color = "transparent"
+)
+
+leaflet(viz_gdf) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal(get(target_date)),
+    fillOpacity = 0.7,
+    color = "white",
+    weight = 1,
+    popup = ~paste0(
+      "<strong>", RegionName, ", ", State, "</strong><br>",
+      "Home Value: $", format(get(target_date), big.mark = ",")
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = pal,
+    values = ~get(target_date),
+    title = "Zillow Home Median Value",
+    opacity = 1
+  )
+```
+
+**Note:** This creates an interactive map where users can hover over counties to see home values. The blue color gradient represents the magnitude of home values.
+
+## PDFM Embeddings Integration
+
+### Load PDFM Embeddings
+
+```{r}
+#| label: load-embeddings
+#| warning: false   # hide warnings
+#| message: false
+
+# Load pre-computed PDFM embeddings
+embeddings <- read_csv("https://github.com/zyang91/Google-Embedding-tutorial/releases/download/v2.0.0/county_embeddings.csv")
+
+```
+
+**About PDFM Embeddings:** These 330-dimensional vectors encode complex spatial patterns including:
+
+- Population mobility patterns
+- Search behavior trends
+- Local economic activity indicators
+- Environmental conditions
+- Demographic characteristics
+
+### Visualize Single Embedding Feature
+
+```{r}
+#| label: visualize-embedding
+
+# Join embeddings with county geometries
+df_embed <- county_gdf %>%
+  inner_join(embeddings,
+    by = "place"
+  )
+
+# Select one embedding feature to visualize
+feature_col <- "feature329"
+viz_embed <- df_embed %>%
+  dplyr::select(state, all_of(feature_col), geometry)
+```
+
+```{r}
+#| label: map-embedding-feature
+
+# Create map
+pal_embed <- colorNumeric(
+  palette = "Blues",
+  domain = viz_embed[[feature_col]],
+  na.color = "transparent"
+)
+
+leaflet(viz_embed) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal_embed(get(feature_col)),
+    fillOpacity = 0.7,
+    color = "white",
+    weight = 1,
+    popup = ~paste0(
+      "<strong>", state, "</strong><br>",
+      feature_col, ": ", round(get(feature_col), 4)
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = pal_embed,
+    values = ~get(feature_col),
+    title = feature_col,
+    opacity = 1
+  )
+```
+
+**Note:** Each of the 330 embedding features captures different spatial patterns. Feature329 is visualized here as an example.
+
+
+---- 
+here:
+
+
+## Regression Modeling
+
+### Prepare Training Data
+
+```{r}
+#| label: prepare-modeling-data
+
+# Join ZHVI with embeddings
+data <- zhvi_df %>%
+  rownames_to_column("place") %>%
+  inner_join(
+    embeddings %>% rownames_to_column("place"),
+    by = "place"
+  )
+
+# Define embedding features and target variable
+embedding_features <- paste0("feature", 0:329)
+target_label <- "2024-10-31"
+
+# Remove rows with missing target values
+data <- data %>%
+  filter(!is.na(get(target_label)))
+
+# Select only features and target for modeling
+modeling_data <- data %>%
+  select(all_of(c(embedding_features, target_label)))
+
+# Extract features and target
+X <- modeling_data %>% select(all_of(embedding_features))
+y <- modeling_data %>% pull(target_label)
+
+# Split into training and testing sets (80/20 split)
+train_indices <- createDataPartition(y, p = 0.8, list = FALSE)
+X_train <- X[train_indices, ]
+X_test <- X[-train_indices, ]
+y_train <- y[train_indices]
+y_test <- y[-train_indices]
+
+cat("Training set size:", nrow(X_train), "\n")
+cat("Test set size:", nrow(X_test), "\n")
+```
+
+### Model 1: Linear Regression (Baseline)
+
+```{r}
+#| label: linear-regression
+#| eval: false
+
+# Combine features and target for training
+train_data <- X_train %>%
+  mutate(target = y_train)
+
+# Fit linear regression model using all features
+lr_model <- lm(target ~ ., data = train_data)
+
+# Make predictions on test set
+y_pred_lr <- predict(lr_model, newdata = X_test)
+
+# Calculate evaluation metrics
+lr_mae <- mae(y_test, y_pred_lr)
+lr_rmse <- rmse(y_test, y_pred_lr)
+lr_r2 <- cor(y_test, y_pred_lr)^2
+
+cat("\n=== Linear Regression Results ===\n")
+cat("MAE:  ", format(lr_mae, big.mark = ","), "\n")
+cat("RMSE: ", format(lr_rmse, big.mark = ","), "\n")
+cat("R²:   ", round(lr_r2, 4), "\n")
+```
+
+**Linear Regression Interpretation:**
+
+- Uses all 330 embedding features
+- No feature selection - may include irrelevant features
+- Can be prone to overfitting with high-dimensional data
+- Serves as baseline for comparison
+
+### Model 2: Stepwise Regression
+
+```{r}
+#| label: stepwise-regression
+#| eval: false
+
+# Fit initial full model
+full_model <- lm(target ~ ., data = train_data)
+
+# Perform stepwise regression using AIC criterion
+# Direction "both" allows both forward and backward selection
+step_model <- stepAIC(
+  full_model,
+  direction = "both",
+  trace = FALSE  # Set to TRUE to see step-by-step selection
+)
+
+# Get selected features
+selected_features <- names(coef(step_model))[-1]  # Exclude intercept
+cat("Number of features selected:", length(selected_features), "out of 330\n")
+
+# Make predictions on test set
+y_pred_step <- predict(step_model, newdata = X_test)
+
+# Calculate evaluation metrics
+step_mae <- mae(y_test, y_pred_step)
+step_rmse <- rmse(y_test, y_pred_step)
+step_r2 <- cor(y_test, y_pred_step)^2
+
+cat("\n=== Stepwise Regression Results ===\n")
+cat("MAE:  ", format(step_mae, big.mark = ","), "\n")
+cat("RMSE: ", format(step_rmse, big.mark = ","), "\n")
+cat("R²:   ", round(step_r2, 4), "\n")
+```
+
+**Stepwise Regression Interpretation:**
+
+- Automatically selects most predictive features using AIC (Akaike Information Criterion)
+- Balances model fit with complexity
+- Typically results in a more parsimonious model
+- Can improve generalization on test data
+- Shows which embedding dimensions are most important for prediction
+
+### Model Comparison
+
+```{r}
+#| label: model-comparison
+#| eval: false
+
+# Create comparison table
+comparison_df <- data.frame(
+  Model = c("Linear Regression", "Stepwise Regression"),
+  MAE = c(lr_mae, step_mae),
+  RMSE = c(lr_rmse, step_rmse),
+  R_squared = c(lr_r2, step_r2),
+  Features_Used = c(330, length(selected_features))
+)
+
+print(comparison_df)
+
+# Calculate improvement
+mae_improvement <- ((lr_mae - step_mae) / lr_mae) * 100
+rmse_improvement <- ((lr_rmse - step_rmse) / lr_rmse) * 100
+
+cat("\n=== Performance Improvements ===\n")
+cat("MAE improvement:  ", round(mae_improvement, 2), "%\n")
+cat("RMSE improvement: ", round(rmse_improvement, 2), "%\n")
+```
+
+**Key Insights:**
+
+- Compare which model performs better on unseen data
+- Stepwise regression uses fewer features while potentially maintaining or improving accuracy
+- Feature reduction can lead to better interpretability and faster predictions
+
+## Visualization of Model Performance
+
+### Actual vs. Predicted Plot - Linear Regression
+
+```{r}
+#| label: plot-lr
+#| eval: false
+
+# Create evaluation dataframe for linear regression
+eval_df_lr <- data.frame(
+  actual = y_test,
+  predicted = y_pred_lr
+)
+
+# Plot
+ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
+  geom_point(alpha = 0.5, color = "steelblue") +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  coord_fixed(xlim = c(0, 1000000), ylim = c(0, 1000000)) +
+  labs(
+    title = "Linear Regression: Actual vs Predicted",
+    subtitle = paste0("R² = ", round(lr_r2, 4)),
+    x = "Actual Home Value ($)",
+    y = "Predicted Home Value ($)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5)
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+```
+
+### Actual vs. Predicted Plot - Stepwise Regression
+
+```{r}
+#| label: plot-stepwise
+#| eval: false
+
+# Create evaluation dataframe for stepwise regression
+eval_df_step <- data.frame(
+  actual = y_test,
+  predicted = y_pred_step
+)
+
+# Plot
+ggplot(eval_df_step, aes(x = actual, y = predicted)) +
+  geom_point(alpha = 0.5, color = "darkgreen") +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  coord_fixed(xlim = c(0, 1000000), ylim = c(0, 1000000)) +
+  labs(
+    title = "Stepwise Regression: Actual vs Predicted",
+    subtitle = paste0("R² = ", round(step_r2, 4)),
+    x = "Actual Home Value ($)",
+    y = "Predicted Home Value ($)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5)
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma)
+```
+
+**Interpretation of Scatter Plots:**
+
+- Points along the red diagonal line indicate perfect predictions
+- Points above the line = model overestimates home value
+- Points below the line = model underestimates home value
+- Tighter clustering around the diagonal = better model performance
+
+### Side-by-Side Comparison Plot
+
+```{r}
+#| label: comparison-plot
+#| eval: false
+
+# Combine both model predictions
+combined_eval <- data.frame(
+  actual = rep(y_test, 2),
+  predicted = c(y_pred_lr, y_pred_step),
+  model = rep(c("Linear Regression", "Stepwise Regression"),
+              each = length(y_test))
+)
+
+# Create faceted plot
+ggplot(combined_eval, aes(x = actual, y = predicted, color = model)) +
+  geom_point(alpha = 0.4) +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  facet_wrap(~model) +
+  coord_fixed(xlim = c(0, 1000000), ylim = c(0, 1000000)) +
+  labs(
+    title = "Model Comparison: Actual vs Predicted Home Values",
+    x = "Actual Home Value ($)",
+    y = "Predicted Home Value ($)"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "none",
+    strip.text = element_text(face = "bold")
+  ) +
+  scale_x_continuous(labels = scales::comma) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_color_manual(values = c("steelblue", "darkgreen"))
+```
+
+## Spatial Visualization of Prediction Errors
+
+### Calculate Prediction Differences
+
+```{r}
+#| label: calc-differences
+#| eval: false
+
+# Create dataframe with predictions and calculate difference
+# Using linear regression predictions for spatial analysis
+eval_with_geo <- data.frame(
+  place = data$place[-train_indices],
+  actual = y_test,
+  predicted = y_pred_lr,
+  difference = y_test - y_pred_lr
+) %>%
+  left_join(
+    zhvi_gdf %>%
+      st_drop_geometry() %>%
+      select(place, RegionName, State),
+    by = "place"
+  ) %>%
+  left_join(
+    county_gdf %>%
+      rownames_to_column("place") %>%
+      select(place, geometry),
+    by = "place"
+  ) %>%
+  st_as_sf()
+
+head(eval_with_geo)
+```
+
+### Map Prediction Errors
+
+```{r}
+#| label: map-errors
+#| eval: false
+
+# Create color palette for differences
+pal_diff <- colorNumeric(
+  palette = "RdBu",  # Red = overestimate, Blue = underestimate
+  domain = eval_with_geo$difference,
+  na.color = "transparent",
+  reverse = TRUE
+)
+
+leaflet(eval_with_geo) %>%
+  addTiles() %>%
+  addPolygons(
+    fillColor = ~pal_diff(difference),
+    fillOpacity = 0.7,
+    color = "white",
+    weight = 1,
+    popup = ~paste0(
+      "<strong>", RegionName, ", ", State, "</strong><br>",
+      "Actual: $", format(actual, big.mark = ","), "<br>",
+      "Predicted: $", format(predicted, big.mark = ","), "<br>",
+      "Difference: $", format(difference, big.mark = ",")
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    pal = pal_diff,
+    values = ~difference,
+    title = "Prediction Error<br>(Actual - Predicted)",
+    opacity = 1,
+    labFormat = labelFormat(prefix = "$")
+  )
+```
+
+**Spatial Error Analysis:**
+
+- **Red areas**: Model underestimates home values (actual > predicted)
+- **Blue areas**: Model overestimates home values (actual < predicted)
+- **White areas**: Predictions close to actual values
+- This spatial visualization can reveal geographic patterns in model performance
+- Systematic errors in specific regions may indicate missing spatial features or local market conditions not captured by embeddings
+
+## Summary and Conclusions
+
+### Key Findings
+
+1. **PDFM Embeddings as Features**: The 330-dimensional PDFM embeddings successfully capture spatial patterns relevant to home value prediction.
+
+2. **Model Performance**:
+   - Linear regression provides a straightforward baseline using all features
+   - Stepwise regression offers automatic feature selection and potentially improved generalization
+
+3. **Feature Selection Benefits**:
+   - Reduced model complexity
+   - Identification of most important embedding dimensions
+   - Potential reduction in overfitting
+   - Faster prediction times in production
+
+4. **Spatial Patterns**: Error maps reveal geographic variations in prediction accuracy, suggesting opportunities for:
+   - Regional model calibration
+   - Incorporation of additional local features
+   - Investigation of market-specific factors
+
+### Methodological Considerations
+
+**Advantages of Using Embeddings:**
+
+- Captures complex, non-linear relationships
+- Incorporates diverse data sources (mobility, search trends, environment)
+- Transfer learning from large-scale models
+- Rich spatial representation
+
+**Limitations:**
+
+- Black-box nature makes interpretation challenging
+- Embeddings may encode biases from training data
+- Computational requirements for high-dimensional data
+- Model may not capture hyperlocal market dynamics
+
+### Future Directions
+
+1. **Advanced Models**: Try ensemble methods (Random Forest, XGBoost) or neural networks
+2. **Feature Engineering**: Combine embeddings with traditional features (square footage, bedrooms, etc.)
+
+## References
+
+- Google Research: Population Dynamics Foundation Model (PDFM)
+- Zillow Home Value Index (ZHVI) Database
+- [Dr. Qiusheng Wu PDFM Tutorial](https://github.com/opengeos/GeoAI-Tutorials)
+- [Google PDFM Embedding](https://github.com/google-research/population-dynamics)
+
+---
+
