@@ -42,7 +42,6 @@ Stepwise regression is particularly useful when working with high-dimensional em
 
 ```{r}
 #| label: setup
-#| eval: false
 #| echo: false      # hide code
 #| warning: false   # hide warnings
 #| message: false   # hide messages
@@ -248,11 +247,6 @@ leaflet(viz_embed) %>%
 
 **Note:** Each of the 330 embedding features captures different spatial patterns. Feature329 is visualized here as an example.
 
-
----- 
-here:
-
-
 ## Regression Modeling
 
 ### Prepare Training Data
@@ -262,15 +256,14 @@ here:
 
 # Join ZHVI with embeddings
 data <- zhvi_df %>%
-  rownames_to_column("place") %>%
   inner_join(
-    embeddings %>% rownames_to_column("place"),
+    embeddings,
     by = "place"
   )
 
 # Define embedding features and target variable
 embedding_features <- paste0("feature", 0:329)
-target_label <- "2024-10-31"
+target_label <- "X2024.10.31"
 
 # Remove rows with missing target values
 data <- data %>%
@@ -278,90 +271,72 @@ data <- data %>%
 
 # Select only features and target for modeling
 modeling_data <- data %>%
-  select(all_of(c(embedding_features, target_label)))
-
-# Extract features and target
-X <- modeling_data %>% select(all_of(embedding_features))
-y <- modeling_data %>% pull(target_label)
-
+  dplyr::select(all_of(c(embedding_features, target_label)))
+modeling_data <- modeling_data %>%
+  mutate(index = row_number())
 # Split into training and testing sets (80/20 split)
-train_indices <- createDataPartition(y, p = 0.8, list = FALSE)
-X_train <- X[train_indices, ]
-X_test <- X[-train_indices, ]
-y_train <- y[train_indices]
-y_test <- y[-train_indices]
+train_indices <- createDataPartition(modeling_data$index, p = 0.8, list = FALSE)
+train_data <- modeling_data[train_indices, ]
+test_data <- modeling_data[-train_indices, ]
 
-cat("Training set size:", nrow(X_train), "\n")
-cat("Test set size:", nrow(X_test), "\n")
 ```
+Test data:604
+Train data:2431
 
 ### Model 1: Linear Regression (Baseline)
 
 ```{r}
 #| label: linear-regression
-#| eval: false
 
-# Combine features and target for training
-train_data <- X_train %>%
-  mutate(target = y_train)
+# refine train data
+train_data <- train_data %>%
+  dplyr::select(-index)
+  
+train_data<- train_data %>%
+  rename(target = X2024.10.31)
 
 # Fit linear regression model using all features
 lr_model <- lm(target ~ ., data = train_data)
 
+summary(lr_model)
+```
+On training data, adjusted R-squared: **0.8645**, which indicates the model explains a high proportion of variance in home values.
+
+```{r}
 # Make predictions on test set
-y_pred_lr <- predict(lr_model, newdata = X_test)
+y_pred_lr <- predict(lr_model, newdata = test_data%>%dplyr::select(-index, -X2024.10.31))
+
+y_test <- test_data$X2024.10.31
 
 # Calculate evaluation metrics
 lr_mae <- mae(y_test, y_pred_lr)
 lr_rmse <- rmse(y_test, y_pred_lr)
 lr_r2 <- cor(y_test, y_pred_lr)^2
-
-cat("\n=== Linear Regression Results ===\n")
-cat("MAE:  ", format(lr_mae, big.mark = ","), "\n")
-cat("RMSE: ", format(lr_rmse, big.mark = ","), "\n")
-cat("R²:   ", round(lr_r2, 4), "\n")
 ```
+
+MAE: 42972.12
+RMSE: 59355.71
+R²: 0.8564
 
 **Linear Regression Interpretation:**
 
 - Uses all 330 embedding features
 - No feature selection - may include irrelevant features
-- Can be prone to overfitting with high-dimensional data
 - Serves as baseline for comparison
 
 ### Model 2: Stepwise Regression
 
 ```{r}
 #| label: stepwise-regression
-#| eval: false
-
-# Fit initial full model
-full_model <- lm(target ~ ., data = train_data)
 
 # Perform stepwise regression using AIC criterion
 # Direction "both" allows both forward and backward selection
-step_model <- stepAIC(
-  full_model,
-  direction = "both",
-  trace = FALSE  # Set to TRUE to see step-by-step selection
-)
+# step_model <- stepAIC(
+#   lr_model,
+#   direction = "both",
+#   trace = TRUE  # Set to TRUE to see step-by-step selection
+# )
 
-# Get selected features
-selected_features <- names(coef(step_model))[-1]  # Exclude intercept
-cat("Number of features selected:", length(selected_features), "out of 330\n")
-
-# Make predictions on test set
-y_pred_step <- predict(step_model, newdata = X_test)
-
-# Calculate evaluation metrics
-step_mae <- mae(y_test, y_pred_step)
-step_rmse <- rmse(y_test, y_pred_step)
-step_r2 <- cor(y_test, y_pred_step)^2
-
-cat("\n=== Stepwise Regression Results ===\n")
-cat("MAE:  ", format(step_mae, big.mark = ","), "\n")
-cat("RMSE: ", format(step_rmse, big.mark = ","), "\n")
-cat("R²:   ", round(step_r2, 4), "\n")
 ```
 
 **Stepwise Regression Interpretation:**
@@ -369,8 +344,19 @@ cat("R²:   ", round(step_r2, 4), "\n")
 - Automatically selects most predictive features using AIC (Akaike Information Criterion)
 - Balances model fit with complexity
 - Typically results in a more parsimonious model
-- Can improve generalization on test data
 - Shows which embedding dimensions are most important for prediction
+- Not possible (it will compute over 54000 models, roughly takes around 6-7 days to finish)
+
+
+## Model 3: Ridged Regression
+```{r}
+
+```
+
+## Model 4: Lasso Regression
+```{r}
+
+```
 
 ### Model Comparison
 
@@ -378,24 +364,7 @@ cat("R²:   ", round(step_r2, 4), "\n")
 #| label: model-comparison
 #| eval: false
 
-# Create comparison table
-comparison_df <- data.frame(
-  Model = c("Linear Regression", "Stepwise Regression"),
-  MAE = c(lr_mae, step_mae),
-  RMSE = c(lr_rmse, step_rmse),
-  R_squared = c(lr_r2, step_r2),
-  Features_Used = c(330, length(selected_features))
-)
 
-print(comparison_df)
-
-# Calculate improvement
-mae_improvement <- ((lr_mae - step_mae) / lr_mae) * 100
-rmse_improvement <- ((lr_rmse - step_rmse) / lr_rmse) * 100
-
-cat("\n=== Performance Improvements ===\n")
-cat("MAE improvement:  ", round(mae_improvement, 2), "%\n")
-cat("RMSE improvement: ", round(rmse_improvement, 2), "%\n")
 ```
 
 **Key Insights:**
@@ -410,7 +379,6 @@ cat("RMSE improvement: ", round(rmse_improvement, 2), "%\n")
 
 ```{r}
 #| label: plot-lr
-#| eval: false
 
 # Create evaluation dataframe for linear regression
 eval_df_lr <- data.frame(
@@ -438,36 +406,13 @@ ggplot(eval_df_lr, aes(x = actual, y = predicted)) +
   scale_y_continuous(labels = scales::comma)
 ```
 
-### Actual vs. Predicted Plot - Stepwise Regression
+### Actual vs. Predicted Plot - Ridged Regression
 
 ```{r}
 #| label: plot-stepwise
 #| eval: false
 
-# Create evaluation dataframe for stepwise regression
-eval_df_step <- data.frame(
-  actual = y_test,
-  predicted = y_pred_step
-)
 
-# Plot
-ggplot(eval_df_step, aes(x = actual, y = predicted)) +
-  geom_point(alpha = 0.5, color = "darkgreen") +
-  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  coord_fixed(xlim = c(0, 1000000), ylim = c(0, 1000000)) +
-  labs(
-    title = "Stepwise Regression: Actual vs Predicted",
-    subtitle = paste0("R² = ", round(step_r2, 4)),
-    x = "Actual Home Value ($)",
-    y = "Predicted Home Value ($)"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5)
-  ) +
-  scale_x_continuous(labels = scales::comma) +
-  scale_y_continuous(labels = scales::comma)
 ```
 
 **Interpretation of Scatter Plots:**
@@ -477,40 +422,10 @@ ggplot(eval_df_step, aes(x = actual, y = predicted)) +
 - Points below the line = model underestimates home value
 - Tighter clustering around the diagonal = better model performance
 
-### Side-by-Side Comparison Plot
+### Actual vs. Predicted Comparison Plot - Lasso Regression
 
 ```{r}
-#| label: comparison-plot
-#| eval: false
 
-# Combine both model predictions
-combined_eval <- data.frame(
-  actual = rep(y_test, 2),
-  predicted = c(y_pred_lr, y_pred_step),
-  model = rep(c("Linear Regression", "Stepwise Regression"),
-              each = length(y_test))
-)
-
-# Create faceted plot
-ggplot(combined_eval, aes(x = actual, y = predicted, color = model)) +
-  geom_point(alpha = 0.4) +
-  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  facet_wrap(~model) +
-  coord_fixed(xlim = c(0, 1000000), ylim = c(0, 1000000)) +
-  labs(
-    title = "Model Comparison: Actual vs Predicted Home Values",
-    x = "Actual Home Value ($)",
-    y = "Predicted Home Value ($)"
-  ) +
-  theme_minimal() +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    legend.position = "none",
-    strip.text = element_text(face = "bold")
-  ) +
-  scale_x_continuous(labels = scales::comma) +
-  scale_y_continuous(labels = scales::comma) +
-  scale_color_manual(values = c("steelblue", "darkgreen"))
 ```
 
 ## Spatial Visualization of Prediction Errors
@@ -521,67 +436,14 @@ ggplot(combined_eval, aes(x = actual, y = predicted, color = model)) +
 #| label: calc-differences
 #| eval: false
 
-# Create dataframe with predictions and calculate difference
-# Using linear regression predictions for spatial analysis
-eval_with_geo <- data.frame(
-  place = data$place[-train_indices],
-  actual = y_test,
-  predicted = y_pred_lr,
-  difference = y_test - y_pred_lr
-) %>%
-  left_join(
-    zhvi_gdf %>%
-      st_drop_geometry() %>%
-      select(place, RegionName, State),
-    by = "place"
-  ) %>%
-  left_join(
-    county_gdf %>%
-      rownames_to_column("place") %>%
-      select(place, geometry),
-    by = "place"
-  ) %>%
-  st_as_sf()
-
-head(eval_with_geo)
 ```
 
 ### Map Prediction Errors
 
 ```{r}
 #| label: map-errors
-#| eval: false
 
-# Create color palette for differences
-pal_diff <- colorNumeric(
-  palette = "RdBu",  # Red = overestimate, Blue = underestimate
-  domain = eval_with_geo$difference,
-  na.color = "transparent",
-  reverse = TRUE
-)
 
-leaflet(eval_with_geo) %>%
-  addTiles() %>%
-  addPolygons(
-    fillColor = ~pal_diff(difference),
-    fillOpacity = 0.7,
-    color = "white",
-    weight = 1,
-    popup = ~paste0(
-      "<strong>", RegionName, ", ", State, "</strong><br>",
-      "Actual: $", format(actual, big.mark = ","), "<br>",
-      "Predicted: $", format(predicted, big.mark = ","), "<br>",
-      "Difference: $", format(difference, big.mark = ",")
-    )
-  ) %>%
-  addLegend(
-    position = "bottomright",
-    pal = pal_diff,
-    values = ~difference,
-    title = "Prediction Error<br>(Actual - Predicted)",
-    opacity = 1,
-    labFormat = labelFormat(prefix = "$")
-  )
 ```
 
 **Spatial Error Analysis:**
