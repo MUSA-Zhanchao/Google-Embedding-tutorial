@@ -730,7 +730,6 @@ leaflet(error_map_data) %>%
 
 1. **Advanced Models**: Try ensemble methods (Random Forest, XGBoost) or neural networks
 2. **Feature Engineering**: Combine embeddings with traditional features (square footage, bedrooms, etc.)
-4. **Time Series Analysis**: Leverage temporal patterns in ZHVI data for forecasting
 
 ## References
 
