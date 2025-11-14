@@ -291,7 +291,7 @@ Train data:2431
 # refine train data
 train_data <- train_data %>%
   dplyr::select(-index)
-  
+
 train_data<- train_data %>%
   rename(target = X2024.10.31)
 
