@@ -53,7 +53,7 @@ Ridge and Lasso regression are particularly useful when working with high-dimens
 ### Load Required Libraries
 
 ```{r}
-#| label: setup      
+#| label: setup
 #| warning: false   # hide warnings
 #| message: false   # hide messages
 
