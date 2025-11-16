@@ -54,10 +54,8 @@ Ridge and Lasso regression are particularly useful when working with high-dimens
 
 ```{r}
 #| label: setup
-#| echo: false      # hide code
 #| warning: false   # hide warnings
 #| message: false   # hide messages
-#| include: true
 
 # Data manipulation and analysis
 library(tidyverse)
@@ -375,7 +373,7 @@ kable(lr_results,
 - Not possible (it will compute over 54000 models, roughly takes around 6-7 days to finish)
 
 
-## Model 3: Ridge Regression
+### Model 3: Ridge Regression
 ```{r}
 #| label: ridge-regression
 
@@ -423,7 +421,7 @@ kable(ridge_results,
 - Cross-validation used to find optimal lambda value
 - Helps prevent overfitting compared to standard linear regression
 
-## Model 4: Lasso Regression
+### Model 4: Lasso Regression
 ```{r}
 #| label: lasso-regression
 
