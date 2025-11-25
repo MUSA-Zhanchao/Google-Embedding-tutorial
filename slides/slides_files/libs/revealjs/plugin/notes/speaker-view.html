@@ -408,8 +408,16 @@
 							handleStateMessage( data );
 						}
 						else if( data.type === 'return' ) {
-							pendingCalls[data.callId](data.result);
-							delete pendingCalls[data.callId];
+							if (
+								Object.prototype.hasOwnProperty.call(pendingCalls, data.callId) &&
+								typeof pendingCalls[data.callId] === 'function'
+							) {
+								pendingCalls[data.callId](data.result);
+								delete pendingCalls[data.callId];
+							} else {
+								// Optionally log or ignore unvalidated callId
+								console.warn('Speaker view: invalid pending callId received:', data.callId, pendingCalls[data.callId]);
+							}
 						}
 					}
 					// Messages sent by the reveal.js inside of the current slide preview
